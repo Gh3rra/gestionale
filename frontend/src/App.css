@@ -1,8 +1,6 @@
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+  width: 100vw;
+  height: 100vh;
 }
 
 .logo {
@@ -38,5 +36,43 @@
 }
 
 .read-the-docs {
-  color: #888;
+  color: #5f5f60;
+}
+
+.navbar-container {
+  padding: 0 60px;
+  background-color: #f2f2f2;
+  height: 84px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  color: #5f5f60;
+  justify-content: space-between;
+}
+.navigation-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}
+
+.search-bar-container {
+  background-color: #e6e6e6;
+  width: 480px;
+  height: 45px;
+  border-radius: 20px;
+}
+
+.right-content-container {
+  gap: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;  
+}
+
+.profile-img-container {
+  background-color: #5f5f60;
+  width: 50px;
+  height: 50px;
+  border-radius: 50px;
 }

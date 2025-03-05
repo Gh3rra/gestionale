@@ -1,35 +1,29 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import "./App.css";
+import { GrHomeRounded } from "react-icons/gr";
+import { IoIosArrowForward } from "react-icons/io";
+import { LuSettings } from "react-icons/lu";
+import { IoNotifications } from "react-icons/io5";
+import { FaRegCircle } from "react-icons/fa";
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+      <div className="navbar-container">
+        <div className="navigation-container">
+          <GrHomeRounded size={20} />
+          <IoIosArrowForward size={20} />
+          <p className="prova">Dashboard</p>
+        </div>
+        <div className="search-bar-container"></div>
+        <div className="right-content-container">
+          {" "}
+          <LuSettings size={20} />
+          <IoNotifications size={20} />
+          <div className="profile-img-container"></div>
+        </div>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
