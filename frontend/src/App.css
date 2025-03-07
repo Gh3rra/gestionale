@@ -1,53 +1,20 @@
-#root {
-  width: 100vw;
-  height: 100vh;
+.bar-wrapper {
+  display: flex;
+  flex-direction: row;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
-}
-
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
-}
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #5f5f60;
-}
 
 .navbar-container {
   padding: 0 60px;
   background-color: #f2f2f2;
   height: 84px;
-  display: flex;
+  width: 100%;                  /* % si usa per lo spazio disponibile */
+  display: flex;                 
   flex-direction: row;
   align-items: center;
-  color: #5f5f60;
+  color: #5F5F60;
   justify-content: space-between;
+  outline: 2px solid #CCCCCC;
 }
 .navigation-container {
   display: flex;
@@ -61,7 +28,14 @@
   width: 480px;
   height: 45px;
   border-radius: 20px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 0 15px;
+  gap: 7px;
+  border: 2px solid #5F5F60;
 }
+
 
 .right-content-container {
   gap: 20px;
@@ -71,8 +45,16 @@
 }
 
 .profile-img-container {
-  background-color: #5f5f60;
+  background-color: #5F5F60;
   width: 50px;
   height: 50px;
   border-radius: 50px;
+}
+
+.sidebar-container{
+ height: 100vh;
+ width: 346px;
+ display: flex;
+ background-color: #f2f2f2;
+ border-right: 2px solid  #CCCCCC;
 }
