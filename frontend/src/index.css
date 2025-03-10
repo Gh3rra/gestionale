@@ -3,7 +3,7 @@
   line-height: normal;
   font-size: 17px;
   color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
+  color: var(--primary-text);
   background-color: var(--background);
 
   font-synthesis: none;
@@ -55,7 +55,7 @@ h1 {
 
 button {
   border-radius: 8px;
-  border: 1px solid transparent;
+  border: 0.5px solid transparent;
   padding: 0.6em 1.2em;
   font-size: 1em;
   font-weight: 500;
