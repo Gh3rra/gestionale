@@ -28,9 +28,9 @@ function Customers() {
     keys: ["name", "surname"],
   });
 
-  const search = (text) => {
-    const newList = fuse.search(text).map((result) => result.item);
-    if (text === "") {
+  const search = () => {
+    const newList = fuse.search(searchText).map((result) => result.item);
+    if (searchText === "") {
       console.log("ciao");
 
       setCustomersList(listToSearch);
@@ -39,12 +39,19 @@ function Customers() {
     }
   };
 
+  useEffect(() => {
+    search();
+  }, [searchText, listToSearch]);
+
+    
+
   const handleClick = (filterType) => {
     setSelectedType(selectedType === filterType ? FilterType.NONE : filterType);
   };
 
   useEffect(() => {
     filterCustomersList();
+    
   }, [selectedType]);
 
   const filterCustomersList = () => {
@@ -122,7 +129,6 @@ function Customers() {
               value={searchText}
               onChange={(e) => {
                 setSearchText(e.target.value);
-                search(e.target.value);
               }}
               type="text"
               className="search-filter"
