@@ -246,3 +246,86 @@ export const suppliers = [
     pec: "prova@pec.com",
   },
 ];
+
+export const commissions = [
+  {
+    id: 0,
+    title: "Cancello in acciaio inox",
+    profileImg:
+      "https://www.innovarchitettura.it/wp-content/uploads/2020/05/logo-ferraro.png",
+    customerId: 2,
+    state: 2,
+    dateRequest: new Date(2025, 1, 12),
+    address: "Contrada Le belle 12",
+    city: "Mirabella Eclano",
+    cap: "83031",
+    province: "AV",
+    totalExpenses: 2457.50,
+    totalIncomes: 0,
+  },
+  {
+    id: 1,
+    title: "Tettoia in alluminio Luigi Moio",
+    profileImg:
+      "https://searinfissi.it/wp-content/uploads/2018/02/logo_new_sear_trasparente.png",
+    customerId: 0,
+    state: 0,
+    dateRequest: new Date(2024, 2, 15),
+
+    address: "Contrada Le belle 12",
+    city: "Ariano Irpino",
+    cap: "83031",
+    province: "AV",
+    totalExpenses: 545,
+    totalIncomes: 0,
+  },
+  {
+    id: 2,
+    title: "Struttura per capannonne Melito",
+    profileImg:
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Leroy_Merlin.svg/640px-Leroy_Merlin.svg.png",
+    customerId: 5,
+    state: 1,
+    dateRequest: new Date(2024, 9, 2),
+
+    address: "Via Armando Maradona 12",
+    city: "Mirabella Eclano",
+    cap: "83031",
+    province: "AV",
+    totalExpenses: 1424.23,
+    totalIncomes: 1600,
+  },
+  {
+    id: 3,
+    title: "Ringhiera e poggiamano",
+    profileImg:
+      "https://metallurgicairpinagroup.com/web/wp-content/uploads/2017/05/Logo_MIGcom.png",
+    customerId: 0,
+    state: 0,
+    dateRequest: new Date(2023, 11, 4),
+
+    address: "Contrada Le belle 12",
+    city: "Ariano Irpino",
+    cap: "83031",
+    province: "AV",
+    totalExpenses: 0,
+    totalIncomes: 0,
+  },
+
+  {
+    id: 4,
+
+    title: "Soppalco per capannone Gate",
+    profileImg:
+      "https://cdn.onweb.it/541dc121d7c40/files/immagini/irpiniaferr-4e1f2d6b2198f_541dd3998c1ae.jpg",
+    customerId: 3,
+    state: 1,
+    dateRequest: new Date(2023, 8, 7),
+    address: "Contrada Le belle 12",
+    city: "Ariano Irpino",
+    cap: "83031",
+    province: "AV",
+    totalExpenses: 9500,
+    totalIncomes: 11000,
+  },
+];

@@ -24,6 +24,17 @@
 
 .header .title-container .subtitle {
 }
+
+.header .add-button-container .add-button {
+  border: 1px solid var(--fourtiary);
+  outline: none;
+  background-color: var(--white);
+  color: var(--primary-text);
+
+  &:hover {
+    background-color: var(--hover);
+  }
+}
 .content {
   display: flex;
   flex-direction: column;
@@ -162,11 +173,21 @@
     background-color: var(--hover);
   }
 }
+.list-table thead tr th {
+  color: var(--secondary-text);
+  font-weight: 400;
+}
 
 .list-table tbody tr td {
   border-top: 1px solid var(--fourtiary);
   padding: 10px 0 10px 10px;
   text-align: left;
+  color: var(--primary-text);
+  font-weight: 400;
+}
+
+.list-table tbody tr .primary-column {
+  font-weight: 500;
 }
 
 .list-table .name-column {

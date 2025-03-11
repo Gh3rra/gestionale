@@ -36,7 +36,12 @@
   align-items: center;
   justify-content: space-between;
 }
-
+.left-content-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 60%;
+}
 .navigation-container {
   display: flex;
   flex-direction: row;

@@ -25,6 +25,8 @@ function Customers() {
   const [searchText, setSearchText] = useState("");
 
   const fuse = new Fuse(listToSearch, {
+    threshold: 0.4,
+
     keys: ["name", "surname"],
   });
 
@@ -43,15 +45,12 @@ function Customers() {
     search();
   }, [searchText, listToSearch]);
 
-    
-
   const handleClick = (filterType) => {
     setSelectedType(selectedType === filterType ? FilterType.NONE : filterType);
   };
 
   useEffect(() => {
     filterCustomersList();
-    
   }, [selectedType]);
 
   const filterCustomersList = () => {

@@ -8,11 +8,32 @@ import {
 } from "../../../Icon";
 import "../List.css";
 import { suppliers } from "../../../data";
+import Fuse from "fuse.js";
 
 function Suppliers() {
   const [selectedItems, setSelectedItems] = useState([]);
   const [selectedAll, setSelectedAll] = useState(false);
-  const [suppliersList] = useState(suppliers);
+  const [suppliersList, setSuppliersList] = useState(suppliers);
+  const [listToSearch] = useState(suppliersList);
+  const [searchText, setSearchText] = useState("");
+
+  const fuse = new Fuse(listToSearch, {
+    threshold: 0.4,
+    keys: ["name"],
+  });
+
+  const search = () => {
+    const newList = fuse.search(searchText).map((result) => result.item);
+    if (searchText === "") {
+      setSuppliersList(listToSearch);
+    } else {
+      setSuppliersList(newList);
+    }
+  };
+
+  useEffect(() => {
+    search();
+  }, [searchText]);
 
   const handleSelectItems = (id) => {
     setSelectedItems(
@@ -52,9 +73,11 @@ function Suppliers() {
           <div className="search-filter-container">
             <SearchIcon size={20} className="search-lens" />
             <input
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
               type="text"
               className="search-filter"
-              placeholder="Cerca clienti"
+              placeholder="Cerca Fornitori"
             />
           </div>
           <div className="filter-icon">

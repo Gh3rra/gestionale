@@ -324,3 +324,49 @@ export const UnselectedIcon = ({
     />
   </svg>
 );
+
+export const BackArrowIcon = ({
+  color = "currentColor",
+  size = 30,
+  className,
+}) => (
+  <svg
+    className={className}
+    width={`${size}px`}
+    height={`${size}px`}
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M6 12H18M6 12L11 7M6 12L11 17"
+      stroke={color}
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+export const NextArrowIcon = ({
+  color = "currentColor",
+  size = 30,
+  className,
+}) => (
+  <svg
+    className={className}
+    width={`${size}px`}
+    height={`${size}px`}
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M6 12H18M18 12L13 7M18 12L13 17"
+      stroke={color}
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
