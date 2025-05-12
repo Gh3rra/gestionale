@@ -1,0 +1,411 @@
+export const customers = [
+  {
+    id: 0,
+    type: 0,
+    name: "Luigi",
+    surname: "Moio",
+    profileImg:
+      "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8YXZhdGFyfGVufDB8fDB8fHww",
+    fiscalCode: "MOILGW45A65A988V",
+    address: "Contrada Le belle 12",
+    city: "Mirabella Eclano",
+    cap: "83031",
+    province: "AV",
+    phone: "334 3125658",
+    email: "prova@email.com",
+    pec: "prova@pec.com",
+    worksDone: 15,
+    totalValueWorks: 1540.3,
+  },
+  {
+    id: 1,
+    profileImg:
+      "https://citynews-anconatoday.stgy.ovh/~media/horizontal-low/3616561166072/mario-canino-2.jpg",
+    type: 0,
+    name: "Mario",
+    surname: "Canino",
+    fiscalCode: "MOILGW45A65A988V",
+    address: "Contrada Le belle 12",
+    city: "Ariano Irpino",
+    cap: "83031",
+    province: "AV",
+    phone: "334 3125658",
+    email: "prova@email.com",
+    pec: "prova@pec.com",
+    worksDone: 15,
+    totalValueWorks: 1540.3,
+  },
+  {
+    id: 2,
+    profileImg:
+      "https://www.giffonifilmfestival.it/media/k2/items/cache/e6dd110b7f2dbbfd39190ac96008ce7f_XL.jpg",
+
+    type: 0,
+    name: "Francesco",
+    surname: "Paolantoni",
+    fiscalCode: "MOILGW45A65A988V",
+    address: "Via Armando Maradona 12",
+    city: "Mirabella Eclano",
+    cap: "83031",
+    province: "AV",
+    phone: "334 3125658",
+    email: "prova@email.com",
+    pec: "prova@pec.com",
+    worksDone: 15,
+    totalValueWorks: 1540.3,
+  },
+  {
+    id: 3,
+    type: 1,
+    name: "Gate SRL",
+    profileImg:
+      "https://www.gate-srl.it/wp-content/uploads/2018/05/logo-x-fondo-buanco.png",
+
+    ivaCode: "12331265498315",
+    address: "Contrada Le belle 12",
+    city: "Ariano Irpino",
+    cap: "83031",
+    province: "AV",
+    phone: "334 3125658",
+    email: "prova@email.com",
+    pec: "prova@pec.com",
+    worksDone: 15,
+    totalValueWorks: 1540.3,
+  },
+
+  {
+    id: 4,
+    type: 1,
+    name: "Quintodecimo",
+    profileImg:
+      "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/04/52/fd/b4/quintodecimo-winery.jpg?w=900&h=500&s=1",
+
+    ivaCode: "12331265498315",
+    address: "Contrada Le belle 12",
+    city: "Ariano Irpino",
+    cap: "83031",
+    province: "AV",
+    phone: "334 3125658",
+    email: "prova@email.com",
+    pec: "prova@pec.com",
+    worksDone: 15,
+    totalValueWorks: 1540.3,
+  },
+  {
+    id: 5,
+    type: 1,
+    name: "Comune di Melito Irpino",
+    profileImg:
+      "https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8Y2l0eXxlbnwwfHwwfHx8MA%3D%3D",
+
+    ivaCode: "12331265498315",
+    address: "Contrada Le belle 12",
+    city: "Melito Irpino",
+    cap: "83031",
+    province: "AV",
+    phone: "334 3125658",
+    email: "prova@email.com",
+    pec: "prova@pec.com",
+    worksDone: 15,
+    totalValueWorks: 1540.3,
+  },
+  {
+    id: 6,
+    type: 0,
+    name: "Luigi",
+    surname: "Moio",
+    profileImg:
+      "https://images.unsplash.com/photo-1639149888905-fb39731f2e6c?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjB8fGF2YXRhcnxlbnwwfHwwfHx8MA%3D%3D",
+
+    fiscalCode: "MOILGW45A65A988V",
+    address: "Via Armando Maradona 12",
+    city: "Ariano Irpino",
+    cap: "83031",
+    province: "AV",
+    phone: "334 3125658",
+    email: "prova@email.com",
+    pec: "prova@pec.com",
+    worksDone: 15,
+    totalValueWorks: 1540.3,
+  },
+  {
+    id: 7,
+    type: 0,
+    name: "Luigi",
+    surname: "Moio",
+    profileImg:
+      "https://plus.unsplash.com/premium_photo-1664536392779-049ba8fde933?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8YXZhdGFyfGVufDB8fDB8fHww",
+
+    fiscalCode: "MOILGW45A65A988V",
+    address: "Via Armando Maradona 12",
+    city: "Mirabella Eclano",
+    cap: "83031",
+    province: "AV",
+    phone: "334 3125658",
+    email: "prova@email.com",
+    pec: "prova@pec.com",
+    worksDone: 15,
+    totalValueWorks: 1540.3,
+  },
+  {
+    id: 8,
+    type: 0,
+    name: "Luigi",
+    surname: "Moio",
+    profileImg:
+      "https://plus.unsplash.com/premium_photo-1689539137236-b68e436248de?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8bWFuJTIwYXZhdGFyfGVufDB8fDB8fHww",
+
+    fiscalCode: "MOILGW45A65A988V",
+    address: "Via XXV Aprile 32",
+    city: "Ariano Irpino",
+    cap: "83031",
+    province: "AV",
+    phone: "334 3125658",
+    email: "prova@email.com",
+    pec: "prova@pec.com",
+    worksDone: 15,
+    totalValueWorks: 1540.3,
+  },
+];
+
+export const suppliers = [
+  {
+    id: 0,
+    name: "Ferraro SRL",
+    profileImg:
+      "https://www.innovarchitettura.it/wp-content/uploads/2020/05/logo-ferraro.png",
+    ivaCode: "12350348906546",
+    address: "Contrada Le belle 12",
+    city: "Mirabella Eclano",
+    cap: "83031",
+    province: "AV",
+    phone: "334 3125658",
+    email: "prova@email.com",
+    pec: "prova@pec.com",
+    goods: [{ name: "", amount: "" }],
+  },
+  {
+    id: 1,
+    name: "SEAR INFISSI",
+    profileImg:
+      "https://searinfissi.it/wp-content/uploads/2018/02/logo_new_sear_trasparente.png",
+    ivaCode: "12350348906546",
+    address: "Contrada Le belle 12",
+    city: "Ariano Irpino",
+    cap: "83031",
+    province: "AV",
+    phone: "334 3125658",
+    email: "prova@email.com",
+    pec: "prova@pec.com",
+    goods: [{ name: "", amount: "" }],
+  },
+  {
+    id: 2,
+    name: "Ferramenta Lo Calzo",
+    profileImg:
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Leroy_Merlin.svg/640px-Leroy_Merlin.svg.png",
+
+    ivaCode: "45745648906546",
+    address: "Via Armando Maradona 12",
+    city: "Mirabella Eclano",
+    cap: "83031",
+    province: "AV",
+    phone: "334 3125658",
+    email: "prova@email.com",
+    pec: "prova@pec.com",
+    goods: [{ name: "", amount: "" }],
+  },
+  {
+    id: 3,
+
+    name: "Metallurgica Irpina",
+    profileImg:
+      "https://metallurgicairpinagroup.com/web/wp-content/uploads/2017/05/Logo_MIGcom.png",
+
+    ivaCode: "12331265498315",
+    address: "Contrada Le belle 12",
+    city: "Ariano Irpino",
+    cap: "83031",
+    province: "AV",
+    phone: "334 3125658",
+    email: "prova@email.com",
+    pec: "prova@pec.com",
+    goods: [{ name: "", amount: "" }],
+  },
+
+  {
+    id: 4,
+
+    name: "Irpiniaferr SNC",
+    profileImg:
+      "https://cdn.onweb.it/541dc121d7c40/files/immagini/irpiniaferr-4e1f2d6b2198f_541dd3998c1ae.jpg",
+
+    ivaCode: "89653201651312",
+    address: "Contrada Le belle 12",
+    city: "Ariano Irpino",
+    cap: "83031",
+    province: "AV",
+    phone: "334 3125658",
+    email: "prova@email.com",
+    pec: "prova@pec.com",
+    goods: [{ name: "", amount: "" }],
+  },
+];
+
+export const commissions = [
+  {
+    id: 0,
+    title: "Cancello in acciaio inox",
+    profileImg:
+      "https://www.innovarchitettura.it/wp-content/uploads/2020/05/logo-ferraro.png",
+    privateCustomers: [17],
+    juridicalCustomers: [],
+    suppliers: [
+      {
+        id: 3,
+        goods: [
+          {
+            title: "Tubolari in alluminio",
+            quantity: 5,
+            unitPrice: 21.5,
+            totalPrice: 106,
+          },
+          {
+            title: "Lamiere Alluminio",
+            quantity: 18,
+            unitPrice: 12,
+            totalPrice: 120,
+          },
+          {
+            title: "Zincatura",
+            quantity: null,
+            unitPrice: null,
+            totalPrice: 150,
+          },
+        ],
+      },
+    ],
+    state: 1,
+    dateRequest: new Date(2025, 1, 12),
+    address: "Contrada Le belle 12",
+    city: "Mirabella Eclano",
+    cap: "83031",
+    province: "AV",
+    totalExpenses: 2457.5,
+    totalIncomes: 0,
+  },
+  {
+    id: 1,
+    title: "Tettoia in alluminio Luigi Moio",
+    profileImg:
+      "https://searinfissi.it/wp-content/uploads/2018/02/logo_new_sear_trasparente.png",
+    privateCustomers: [15],
+    juridicalCustomers: [],
+    suppliers: [],
+    state: 0,
+    dateRequest: new Date(2024, 2, 15),
+
+    address: "Contrada Le belle 12",
+    city: "Ariano Irpino",
+    cap: "83031",
+    province: "AV",
+    totalExpenses: 545,
+    totalIncomes: 0,
+  },
+  {
+    id: 2,
+    title: "Struttura per capannonne Melito",
+    profileImg:
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Leroy_Merlin.svg/640px-Leroy_Merlin.svg.png",
+    privateCustomers: [],
+    juridicalCustomers: [6],
+    suppliers: [],
+    state: 2,
+    dateRequest: new Date(2024, 9, 2),
+
+    address: "Via Armando Maradona 12",
+    city: "Mirabella Eclano",
+    cap: "83031",
+    province: "AV",
+    totalExpenses: 1424.23,
+    totalIncomes: 1600,
+  },
+  {
+    id: 3,
+    title: "Ringhiera e poggiamano",
+    profileImg:
+      "https://metallurgicairpinagroup.com/web/wp-content/uploads/2017/05/Logo_MIGcom.png",
+    privateCustomers: [15],
+    juridicalCustomers: [],
+    suppliers: [],
+    state: 0,
+    dateRequest: new Date(2023, 11, 4),
+
+    address: "Contrada Le belle 12",
+    city: "Ariano Irpino",
+    cap: "83031",
+    province: "AV",
+    totalExpenses: 0,
+    totalIncomes: 0,
+  },
+
+  {
+    id: 4,
+
+    title: "Soppalco per capannone Gate",
+    profileImg:
+      "https://cdn.onweb.it/541dc121d7c40/files/immagini/irpiniaferr-4e1f2d6b2198f_541dd3998c1ae.jpg",
+    privateCustomers: [],
+    juridicalCustomers: [4],
+    suppliers: [
+      {
+        id: 1,
+        goods: [
+          {
+            title: "Tubolari in alluminio",
+            quantity: 5,
+            unitPrice: 21.5,
+            totalPrice: 106,
+          },
+          {
+            title: "Lamiere Alluminio",
+            quantity: 18,
+            unitPrice: 12,
+            totalPrice: 120,
+          },
+          {
+            title: "Zincatura",
+            quantity: null,
+            unitPrice: null,
+            totalPrice: 150,
+          },
+        ],
+      },
+      {
+        id: 2,
+        goods: [
+          {
+            title: "Tubolari in alluminio",
+            quantity: 5,
+            unitPrice: 21.5,
+            totalPrice: 106,
+          },
+          {
+            title: "Lamiere Alluminio",
+            quantity: 18,
+            unitPrice: 12,
+            totalPrice: 120,
+          },
+        ],
+      },
+    ],
+    state: 2,
+    dateRequest: new Date(2023, 8, 7),
+    address: "Contrada Le belle 12",
+    city: "Ariano Irpino",
+    cap: "83031",
+    province: "AV",
+    totalExpenses: 9500,
+    totalIncomes: 11000,
+  },
+];

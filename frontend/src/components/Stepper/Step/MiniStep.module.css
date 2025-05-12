@@ -1,0 +1,40 @@
+.miniStep {
+  position: relative;
+  margin-left: 40px;
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  align-items: center;
+}
+
+.wrapper:hover {
+  cursor: pointer;
+}
+
+.wrapper:hover .text {
+  font-weight: 600;
+}
+
+.line {
+  width: 20px;
+  height: 2px;
+  background-color: var(--secondary-text);
+  position: relative;
+}
+
+.line::before {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  width: 2px;
+  height: 20px;
+
+  background-color: var(--secondary-text);
+}
+
+.editText {
+  font-weight: 600;
+}

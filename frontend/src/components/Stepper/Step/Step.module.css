@@ -1,0 +1,63 @@
+.step {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.wrapper {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+}
+.wrapper:hover {
+  cursor: pointer;
+}
+.wrapper:hover .text {
+  font-weight: 600;
+}
+.circleState {
+  background-color: transparent;
+  width: 30px;
+  height: 30px;
+  border-radius: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: all 0.3s ease 0.2s;
+}
+.circleState svg {
+  transition: all 0.3s ease;
+  color: var(--secondary);
+  width: 60%;
+  height: 60%;
+}
+
+.start {
+  background-color: var(--second-background);
+}
+.editing {
+  background-color: var(--secondary-text);
+}
+
+.done {
+  background-color: var(--secondary-text);
+}
+.lineConnector {
+  position: absolute;
+  bottom: 0px;
+  width: 3px;
+  height: 0px;
+  background-color: var(--secondary-text);
+  transition: all 0.1s ease;
+}
+
+.editing svg {
+  color: var(--white);
+}
+.done svg {
+  color: var(--white);
+}
+.editText {
+  font-weight: 600;
+}
