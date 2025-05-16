@@ -7,8 +7,12 @@ import Commissions from "./pages/commissions/Commissions";
 import Suppliers from "./pages/suppliers/Suppliers";
 import AddCommission from "./pages/add-commission/AddCommission";
 import CommissionDetail from "./pages/commission-detail/CommissionDetail";
+import AdminPanel from "./pages/admin/AdminPanel";
+import AdminNavbar from "./pages/admin/Navbar";
+import { useAuth } from "./context/AuthContext";
 
 function App() {
+  const { user } = useAuth();
   return (
     <BrowserRouter>
       <Routes>
@@ -37,6 +41,17 @@ function App() {
             </div>
           }
         ></Route>
+        <Route
+          path="/admin"
+          element={
+            <div className="flex flex-row min-h-screen [&_svg]:text-secondary-text">
+              <AdminNavbar />
+              {user && <Outlet />}
+            </div>
+          }
+        >
+          <Route path="/admin" element={<AdminPanel />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   );

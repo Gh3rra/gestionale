@@ -150,12 +150,11 @@ function CommissionDetail() {
       });
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { data: goodsData, error: goodsError } = await supabase
       .from("commissions_goods")
       .select("quantity,unit_price,total_price,goods(*, suppliers(*))")
       .eq("commission_id", id);
-
-    console.log(goodsData);
 
     if (goodsError) {
       console.log(goodsError);

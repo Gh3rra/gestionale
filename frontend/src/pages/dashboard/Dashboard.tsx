@@ -1,85 +1,100 @@
 import { useEffect, useState } from "react";
-import Button from "../../components/Button/Button";
 import { supabase } from "../../supabase-client";
 import { commissions, customers, suppliers } from "../../data";
 import { getFormattedTimestamp } from "../../common/utils";
+import axios from "axios";
 
 function Dashboard() {
   const [insertLoading, setInsertLoading] = useState(false);
-  const [insertSuppliersLoading, setInsertSuppliersLoading] = useState(false);
-  const [insertCommissionsLoading, setInsertCommissionsLoading] =
-    useState(false);
-  const handleSend = () => {
+  const [insertExcelLoading, setInsertExcelLoading] = useState(false);
+
+  const handleSend = async () => {
     setInsertLoading(true);
-    customers.forEach(async (e) => {
-      if (e.type === 0) {
-        const { error } = await supabase.from("private_customers").insert({
-          name: e.name,
-          surname: e.surname,
-          gender: "M",
-          profile_img: e.profileImg,
-          cf: e.fiscalCode,
-          address: e.address,
-          city: e.city,
-          cap: e.cap,
-          province: e.province,
-          phone: e.phone,
-          email: e.email,
-          pec: e.pec,
-        });
-        if (error) {
-          console.log(error);
-
-          throw new Error(error.message);
+    try {
+      customers.forEach(async (e) => {
+        if (e.type === 0) {
+          const res = await axios.post(
+            "http://localhost:3000/api/customers/private-customer",
+            {
+              name: e.name,
+              surname: e.surname,
+              gender: e.gender,
+              cf: e.fiscalCode,
+              address: e.address,
+              city: e.city,
+              cap: e.cap,
+              province: e.province,
+              phone: e.phone,
+              email: e.email,
+              pec: e.pec,
+              profileImg: e.profileImg,
+            },
+            { withCredentials: true }
+          );
+          if (res.status !== 201) {
+            throw new Error("Error inserting customer");
+          }
+        } else {
+          const res = await axios.post(
+            "http://localhost:3000/api/customers/juridical-customer",
+            {
+              name: e.name,
+              ivaCode: e.ivaCode,
+              address: e.address,
+              city: e.city,
+              cap: e.cap,
+              province: e.province,
+              phone: e.phone,
+              email: e.email,
+              pec: e.pec,
+              profileImg: e.profileImg,
+            },
+            { withCredentials: true }
+          );
+          if (res.status !== 201) {
+            throw new Error("Error inserting customer");
+          }
         }
-      } else {
-        const { error } = await supabase.from("juridical_customers").insert({
-          name: e.name,
-          profile_img: e.profileImg,
-          iva_code: e.ivaCode,
-          address: e.address,
-          city: e.city,
-          cap: e.cap,
-          province: e.province,
-          phone: e.phone,
-          email: e.email,
-          pec: e.pec,
-        });
-        if (error) {
-          console.log(error);
+      });
+    } catch (error) {
+      console.log(error);
 
-          throw new Error(error.message);
-        }
-      }
-    });
+      setInsertLoading(false);
+    }
+    console.log("Customers inserted successfully");
     setInsertLoading(false);
   };
 
   const handleSendSuppliers = () => {
     setInsertSuppliersLoading(true);
-    suppliers.forEach(async (e) => {
-      const { data, error } = await supabase
-        .from("suppliers")
-        .insert({
-          name: e.name,
-          iva_code: e.ivaCode,
-          address: e.address,
-          city: e.city,
-          cap: e.cap,
-          province: e.province,
-          phone: e.phone,
-          email: e.email,
-          pec: e.pec,
-          profile_img: e.profileImg,
-        })
-        .select();
-      if (error) {
-        console.log(error);
+    try {
+      suppliers.forEach(async (e) => {
+        const res = await axios.post(
+          "http://localhost:3000/api/suppliers",
+          {
+            name: e.name,
+            ivaCode: e.ivaCode,
+            address: e.address,
+            city: e.city,
+            cap: e.cap,
+            province: e.province,
+            phone: e.phone,
+            email: e.email,
+            pec: e.pec,
+            profileImg: e.profileImg,
+          },
+          { withCredentials: true }
+        );
 
-        throw new Error(error.message);
-      }
-      console.log(data);
-    });
+        if (res.status !== 201) {
+          throw new Error("Error inserting supplier");
+        }
+      });
+    } catch (error) {
+      console.log(error);
+      setInsertSuppliersLoading(false);
+    }
+    console.log("Suppliers inserted successfully");
     setInsertSuppliersLoading(false);
   };
 
@@ -112,7 +127,6 @@ function Dashboard() {
       commissions: fixedCommissions,
     });
     if (error) console.error(error);
-    else console.log(data);
 
     if (error) {
       console.log(error);
@@ -148,35 +162,15 @@ function Dashboard() {
   });
   async function fetchData() {
     const commissions = (await supabase.from("commissions").select()).data;
-    console.log(commissions);
   }
 
   return (
     <div className="px-15 py-10 w-full mt-20 ml-85">
-      <Button width="200px" height="100px" onClick={handleCane}>
-        DIO MIO
-      </Button>
-      {insertLoading ? <div>Loading...</div> : <div>INSERIMENTO CUSTOMERS</div>}
+      {/* {insertLoading ? <div>Loading...</div> : <div></div>}
       <Button width="200px" height="100px" onClick={handleSend}>
-        SCHIACCIA
-      </Button>
-      {insertSuppliersLoading ? (
-        <div>Loading...</div>
-      ) : (
-        <div>INSERIMENTO SUPPLIERS</div>
-      )}
-      <Button width="200px" height="100px" onClick={handleSendSuppliers}>
-        SCHIACCIA
-      </Button>
+        SCHIACCIA 
+      </Button> */}
 
-      {insertCommissionsLoading ? (
-        <div>Loading...</div>
-      ) : (
-        <div>INSERIMENTO COMMISSIONS</div>
-      )}
-      <Button width="200px" height="100px" onClick={handleCommission}>
-        SCHIACCIA
-      </Button>
     </div>
   );
 }

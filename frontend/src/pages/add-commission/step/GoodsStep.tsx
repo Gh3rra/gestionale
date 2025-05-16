@@ -181,8 +181,6 @@ function FieldsInput({
     if (currentQuantity !== "") {
       setQuantity(currentQuantity);
     }
-    console.log("quantity", typeof quantity);
-    console.log("unitPrice", typeof unitPrice);
     if (quantity !== undefined && unitPrice !== undefined) {
       const sum = quantity * unitPrice;
 

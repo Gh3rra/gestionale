@@ -71,7 +71,7 @@ function Navbar() {
             <div className="w-12.5 h-12.5 rounded-full bg-white border-fourtiary border- overflow-hidden ">
               <img
                 className="h-full w-full object-contain"
-                src={user.user_metadata.profile_img}
+                src={user.profileImg}
                 alt=""
               />
             </div>

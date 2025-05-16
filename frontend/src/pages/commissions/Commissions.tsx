@@ -71,7 +71,6 @@ function Commissions() {
         .from("commissions")
         .select("*, private_customers(name,surname), juridical_customers(name)")
     ).data;
-    console.log(commissionsData);
 
     setCommissions(
       commissionsData !== null
@@ -118,7 +117,6 @@ function Commissions() {
 
   const filteredCommissions = useMemo(() => {
     if (!commissions) return [];
-    console.log(commissions);
 
     let newList = [...commissions];
     // 🟢 Applica il filtro per stato

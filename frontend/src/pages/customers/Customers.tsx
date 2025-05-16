@@ -121,8 +121,6 @@ function Customers() {
     if (juridicalData.data) {
       juridicalData.data.map(mapPrivateCustomer);
     }
-    console.log(privateData);
-    console.log(juridicalData);
   };
 
   const fuse = new Fuse(listToSearch, {

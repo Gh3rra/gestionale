@@ -1,6 +1,12 @@
-import { User } from "@supabase/supabase-js";
 import { createContext, useContext, useEffect, useState } from "react";
-import { supabase } from "../supabase-client";
+import axios from "axios";
+
+interface User {
+  id: string;
+  email: string;
+  name: string;
+  profileImg: string;
+}
 
 interface AuthContextType {
   user: User | null;
@@ -20,37 +26,69 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
-    });
-
-    const { data: listener } = supabase.auth.onAuthStateChange((_, session) => {
-      setUser(session?.user ?? null);
-    });
-
-    return () => {
-      listener.subscription.unsubscribe();
-    };
+    axios
+      .get("http://localhost:3000/api/auth/user", { withCredentials: true })
+      .then((res) => {
+        if (res.status !== 200) {
+          setUser(null);
+          return;
+        }
+        setUser(res.data.user);
+      });
   }, []);
 
-  const signIn = (email: string, password: string) => {
-    supabase.auth.signInWithPassword({ email, password });
+  const signIn = async (email: string, password: string) => {
+    const res = await axios.post(
+      "http://localhost:3000/api/auth/login",
+      {
+        email,
+        password,
+      },
+      { withCredentials: true }
+    );
+    if (res.status !== 200) {
+      window.alert("Invalid credentials");
+      return;
+    }
+    setUser(res.data.user);
+
+    //supabase.auth.signInWithPassword({ email, password });
   };
 
-  const signUp = (
+  const signUp = async (
     email: string,
     password: string,
     name: string,
     profileImg: string
   ) => {
-    supabase.auth.signUp({
-      email,
-      password,
-      options: { data: { name, profile_img: profileImg } },
-    });
+    const res = await axios.post(
+      "http://localhost:3000/api/auth/register",
+      {
+        email,
+        password,
+        name,
+        profileImg,
+      },
+      { withCredentials: true }
+    );
+    if (res.status !== 201) {
+      window.alert("Error signing up");
+      return;
+    }
+    setUser(res.data.user);
   };
-  const signOut = () => {
-    supabase.auth.signOut();
+  const signOut = async () => {
+    const res = await axios.post(
+      "http://localhost:3000/api/auth/logout",
+      {},
+      { withCredentials: true }
+    );
+    if (res.status !== 200) {
+      window.alert("Error signing out");
+      return;
+    }
+    setUser(null);
+    //supabase.auth.signOut();
   };
 
   return (
