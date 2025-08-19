@@ -1,3 +1,4 @@
+import React from "react";
 import { InfoIcon, LocationIcon } from "../../Icon";
 
 import {
@@ -19,7 +20,7 @@ function ExpensesDetail({
     <>
       <div className="flex flex-col gap-8 py-5">
         <div className="flex gap-4">
-          <InfoIcon size={22} />
+          <InfoIcon className="w-5 h-5" />
           <h1>Descrizione</h1>
         </div>
         <div className="flex pl-4 gap-5">
@@ -35,15 +36,15 @@ function ExpensesDetail({
               {privateCustomer !== null
                 ? `${privateCustomer?.name} ${privateCustomer?.surname}`
                 : juridicalCustomer !== null
-                ? juridicalCustomer?.name
-                : "NON PRESENTE"}
+                  ? juridicalCustomer?.name
+                  : "NON PRESENTE"}
             </p>
           </div>
         </div>
       </div>
       <div className="flex flex-col gap-8 py-5">
         <div className="flex gap-4">
-          <LocationIcon size={22} />
+          <LocationIcon className="w-5 h-5" />
           <h1>Luogo</h1>
         </div>
         <div className="flex pl-4 gap-5">

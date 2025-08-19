@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import {
   FilterSettingsIcon,
   SearchIcon,
@@ -6,242 +6,200 @@ import {
   SelectIcon,
   UnselectedIcon,
 } from "../../Icon";
-import { customers } from "../../data";
 import Fuse from "fuse.js";
-import Button from "../../components/Button/Button";
-import Icon from "../../components/Icon/Icon";
-import { supabase } from "../../supabase-client";
+import IconButton from "../../components/IconButton/IconButton";
+import ToggleButton from "../../components/ToggleButton/ToggleButton";
+import { CircularProgress } from "@mui/material";
+import { formatAddress } from "../../common/utils";
+import { useNavigate } from "react-router";
+import { useCustomers } from "../../hooks/useCustomer";
+import { Customer, isPrivateCustomer } from "../../types/customer";
+import React from "react";
+import MyButton from "../../components/Button/Button";
+import FormDialog from "../add-customer/FormDialog";
 
-const FilterType = {
-  NONE: null,
-  PRIVATE: 0,
-  JURIDICAL: 1,
-};
-
-interface PrivateCustomer {
-  id: number;
-  name: string;
-  surname: string;
-  cf: string;
-  gender: string;
-  address: string;
-  cap: string;
-  city: string;
-  province: string;
-  email: string;
-  pec: string;
-  phone: string;
-  profileImg: string;
-  createdAt: string;
-  updatedAt: string;
-  totalAmount?: number;
-  totalWorks?: number;
-}
-
-const mapPrivateCustomer = (row: any): PrivateCustomer => ({
-  id: row.id,
-  name: row.name,
-  surname: row.surname,
-  cf: row.cf,
-  gender: row.gender,
-  address: row.address,
-  cap: row.cap,
-  city: row.city,
-  province: row.province,
-  email: row.email,
-  pec: row.pec,
-  phone: row.phone,
-  profileImg: row.profile_img,
-  createdAt: row.created_at,
-  updatedAt: row.updated_at,
-});
-
-interface JuridicalCustomer {
-  id: number;
-  name: string;
-  ivaCode: string;
-  address: string;
-  cap: string;
-  city: string;
-  province: string;
-  email: string;
-  pec: string;
-  phone: string;
-  profileImg: string;
-  createdAt: string;
-  updatedAt: string;
-  totalAmount?: number;
-  totalWorks?: number;
-}
-
-const mapJuridicalCustomer = (row: any): JuridicalCustomer => ({
-  id: row.id,
-  name: row.name,
-  ivaCode: row.iva_code,
-  address: row.address,
-  cap: row.cap,
-  city: row.city,
-  province: row.province,
-  email: row.email,
-  pec: row.pec,
-  phone: row.phone,
-  profileImg: row.profile_img,
-  createdAt: row.created_at,
-  updatedAt: row.updated_at,
-});
+const FilterType = [
+  { customerType: null },
+  { customerType: "private" },
+  { customerType: "juridical" },
+] as const;
 
 function Customers() {
-  const [selectedType, setSelectedType] = useState(FilterType.NONE);
-  const [selectedItems, setSelectedItems] = useState([]);
-  const [selectedAll, setSelectedAll] = useState(false);
-  const [customersList, setCustomersList] = useState(customers);
-  const [listToSearch, setListToSearch] = useState(customers);
+  const [resultList, setResultList] = useState<Customer[]>([]);
+  const [listToSearch, setListToSearch] = useState<Customer[]>([]);
   const [searchText, setSearchText] = useState("");
+  const [selectedType, setSelectedType] = useState<number>(0);
+  const [selectedItems, setSelectedItems] = useState<number[]>([]);
+  const [open, setOpen] = useState<boolean>(false);
+
+  const handleOpen = () => {
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const navigate = useNavigate();
+
+  const {
+    data: customersList = [],
+    isLoading,
+    error,
+    //refetch,
+  } = useCustomers();
+  useEffect(() => {
+    if (customersList.length > 0) {
+      setResultList(customersList);
+      setListToSearch(customersList);
+    }
+  }, [customersList]);
+
+  const fuse = useMemo(
+    () =>
+      new Fuse(listToSearch, {
+        threshold: 0.4,
+
+        keys: ["name", "surname", "cf", "ivaCode"],
+      }),
+    [listToSearch],
+  );
 
   useEffect(() => {
-    fetchData();
+    if (searchText === "") {
+      setResultList(listToSearch);
+    } else {
+      const results = fuse.search(searchText).map((result) => result.item);
+      setResultList(results);
+    }
+  }, [searchText, listToSearch, fuse]);
+
+  const handleClick = useCallback((filterType: number) => {
+    setSelectedType(filterType);
   }, []);
 
-  const fetchData = async () => {
-    const [privateData, juridicalData] = await Promise.all([
-      await supabase.from("private_customers").select("*"),
-      await supabase.from("juridical_customers").select("*"),
-    ]);
-
-    if (privateData.error) {
-      console.log("Database error", privateData.error);
+  const filterCustomersList = useCallback(() => {
+    let filtered: Customer[];
+    switch (selectedType) {
+      case 0:
+        filtered = customersList;
+        break;
+      case 1:
+        filtered = customersList.filter(
+          (customer) => customer.type === FilterType[selectedType].customerType,
+        );
+        break;
+      case 2:
+        filtered = customersList.filter(
+          (customer) => customer.type === FilterType[selectedType].customerType,
+        );
+        break;
+      default:
+        filtered = customersList;
+        break;
     }
-    if (juridicalData.error) {
-      console.log("Database error", juridicalData.error);
-    }
-
-    if (privateData.data) {
-      privateData.data.map(mapPrivateCustomer);
-    }
-    if (juridicalData.data) {
-      juridicalData.data.map(mapPrivateCustomer);
-    }
-  };
-
-  const fuse = new Fuse(listToSearch, {
-    threshold: 0.4,
-
-    keys: ["name", "surname"],
-  });
-
-  const search = () => {
-    const newList = fuse.search(searchText).map((result) => result.item);
-    if (searchText === "") {
-      setCustomersList(listToSearch);
-    } else {
-      setCustomersList(newList);
-    }
-  };
-
-  useEffect(() => {
-    search();
-  }, [searchText, listToSearch]);
-
-  const handleClick = (filterType) => {
-    setSelectedType(selectedType === filterType ? FilterType.NONE : filterType);
-  };
+    setListToSearch(filtered);
+    setSelectedItems([]);
+  }, [selectedType, customersList]);
 
   useEffect(() => {
     filterCustomersList();
-  }, [selectedType]);
+  }, [filterCustomersList]);
 
-  const filterCustomersList = () => {
-    let newCustomersList = [];
-    if (selectedType === FilterType.PRIVATE) {
-      newCustomersList = customers.filter((customer) => customer.type === 0);
-      setCustomersList(newCustomersList);
-    } else if (selectedType === FilterType.JURIDICAL) {
-      newCustomersList = customers.filter((customer) => customer.type === 1);
-      setCustomersList(newCustomersList);
-    } else {
-      newCustomersList = customers;
-      setCustomersList(newCustomersList);
-    }
-    setListToSearch(newCustomersList);
-    setSelectedItems([]);
-  };
-
-  const handleSelectItems = (id) => {
-    setSelectedItems(
-      selectedItems.includes(id)
-        ? selectedItems.filter((value) => value !== id)
-        : [...selectedItems, id]
+  const handleSelectItems = useCallback((id: number) => {
+    setSelectedItems((prev) =>
+      prev.includes(id) ? prev.filter((value) => value !== id) : [...prev, id],
     );
-  };
+  }, []);
 
-  const handleSelectAll = () => {
+  const handleSelectAll = useCallback(() => {
     setSelectedItems(
-      selectedItems.length !== 0 ? [] : customersList.map((value) => value.id)
+      selectedItems.length !== 0 ? [] : resultList.map((value) => value.id),
     );
-  };
+  }, [selectedItems.length, resultList]);
 
-  useEffect(() => {
-    if (selectedItems.length === customersList.length) {
-      setSelectedAll(true);
-    } else {
-      setSelectedAll(false);
-    }
-  }, [selectedItems]);
+  const selectedAll = useMemo(
+    () => selectedItems.length === resultList.length && resultList.length !== 0,
+
+    [selectedItems.length, resultList.length],
+  );
+
+  const handleNavigateToDetail = useCallback(
+    (id: number, type: string) => {
+      navigate(`/customers/${id}/${type}`);
+    },
+    [navigate],
+  );
+
+  const handleSearchChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setSearchText(event.target.value);
+    },
+    [],
+  );
+
+  if (isLoading) return <CircularProgress />;
+  if (error) return <div>Errore: {error.message}</div>;
 
   return (
-    <div className="w-full mt-[84px] ml-[346px] py-[40px] px-[60px]">
+    <div className="mt-[84px] ml-[346px] w-full px-[60px] py-[40px]">
       <div className="flex justify-between">
-        <div className="flex gap-2.5">
-          <p className="font-semibold !text-[30px]">Elenco Clienti</p>
+        <div className="flex flex-col gap-2.5">
+          <p className="!text-[30px] font-semibold">Elenco Clienti</p>
           <p>Visualizza tutte le informazioni sui tuoi clienti.</p>
         </div>
-      </div>
-      <div className="flex flex-col">
-        <div className="flex gap-5 py-5">
-          <Button
-            height={"40px"}
-            onClick={() => handleClick(FilterType.PRIVATE)}
-          >
-            Privato
-          </Button>
-          <Button
-            height={"40px"}
-            onClick={() => handleClick(FilterType.JURIDICAL)}
-          >
-            Giuridico
-          </Button>
+        <div>
+          <MyButton variant="secondary" onClick={handleOpen}>
+            Aggiungi Cliente
+          </MyButton>
+          {open && <FormDialog closeFn={handleClose} />}
         </div>
+      </div>
+
+      <div className="mt-5 flex flex-col gap-3">
+        <ToggleButton
+          onButtonClick={handleClick}
+          buttons={["Tutti", "Privato", "Giuridico"]}
+          selectedButtonIndex={selectedType}
+        />
+
         <div className="flex items-center gap-2.5">
-          <div className="relative w-[480px] h-[45px] rounded-[10px] flex items-center px-[15px] gap-[7px] border-[0.5px] border-secondary-text">
-            <SearchIcon size={20} />
+          <div className="border-secondary-text relative flex h-[45px] w-[480px] items-center gap-[7px] rounded-[10px] border-[0.5px] px-[15px]">
+            <SearchIcon className="text-secondary h-5 w-5 overflow-visible" />
             <input
               value={searchText}
-              onChange={(e) => {
-                setSearchText(e.target.value);
-              }}
+              onChange={handleSearchChange}
               type="text"
-              className="bg-transparent w-full h-full border-none text-secondary-text !text-[17px] outline-none font-[Inter]"
+              className="text-secondary-text h-full w-full border-none bg-transparent font-[Inter] !text-[17px] outline-none"
               placeholder="Cerca clienti"
             />
           </div>
-          <Icon>
+          <IconButton>
             <FilterSettingsIcon size={20} />
-          </Icon>
+          </IconButton>
         </div>
-        <table className="border-spacing-0 border-separate border-1 border-fourtiary w-full mt-[50px] rounded-[10px] overflow-hidden">
+
+        <table className="border-fourtiary mt-[50px] w-full border-separate border-spacing-0 overflow-hidden rounded-[10px] border-1">
+          <colgroup>
+            <col style={{ minWidth: "auto" }} />
+            <col style={{ width: "25%" }} />
+            <col style={{ width: "25%" }} />
+            <col style={{ width: "15%" }} />
+            <col style={{ width: "15%" }} />
+            <col style={{ width: "15%" }} />
+          </colgroup>
           <thead>
-            <tr className="[&_th]:bg-hover [&_th]:align-middle [&_th]:text-left [&_th]:p-2.5 [&_th]:!pr-0 [&_th]:text-secondary-text [&_th]:font-normal">
+            <tr className="[&_th]:bg-hover [&_th]:text-secondary-text [&_th]:p-2.5 [&_th]:!pr-0 [&_th]:text-left [&_th]:align-middle [&_th]:font-normal">
               <th>
                 <button
-                  className="flex justify-center border-none outline-none items-center bg-transparent hover:cursor-pointer"
-                  onClick={() => handleSelectAll()}
+                  className="flex items-center justify-center border-none bg-transparent outline-none hover:cursor-pointer"
+                  onClick={handleSelectAll}
                 >
                   {selectedAll ? (
-                    <SelectedIcon size={25} />
+                    <SelectedIcon className="h-5 w-5" />
                   ) : selectedItems.length !== 0 ? (
-                    <UnselectedIcon size={25} />
+                    <UnselectedIcon className="h-5 w-5" />
                   ) : (
-                    <SelectIcon size={25} />
+                    <SelectIcon className="h-5 w-5" />
                   )}
                 </button>
               </th>
@@ -253,52 +211,77 @@ function Customers() {
             </tr>
           </thead>
           <tbody>
-            {customersList.map((value, index) => {
-              return (
-                <tr
-                  className="bg-white hover:bg-hover [&_td]:p-2.5 [&_td]:!pr-0 [&_td]:text-left [&_td]:text-primary-text [&_td]:font-normal [&_td]:border-t-[1px] [&_td]:border-t-fourtiary "
-                  key={index}
-                >
-                  <td>
-                    <button
-                      onClick={() => {
-                        handleSelectItems(value.id);
-                      }}
-                      className="flex justify-center border-none outline-none items-center bg-transparent hover:cursor-pointer"
-                    >
-                      {selectedItems.length !== 0 &&
-                      selectedItems.includes(value.id) ? (
-                        <SelectedIcon size={25} />
-                      ) : (
-                        <SelectIcon size={25} />
-                      )}
-                    </button>
-                  </td>
-                  <td>
-                    <div className="flex justify-start items-center gap-[15px]">
-                      <div className="flex justify-center items-center rounded-full w-[45px] h-[45px] overflow-hidden border-1 border-fourtiary">
-                        <img src={value.profileImg} alt="" />
-                      </div>
-                      <p>
-                        {" "}
-                        {value.name} {value.surname}
-                      </p>
-                    </div>
-                  </td>
-                  <td>
-                    {value.address}, {value.city} {value.cap} {value.province}
-                  </td>
-                  <td>{value.phone}</td>
-                  <td>{value.worksDone}</td>
-                  <td>{value.totalValueWorks} €</td>
-                </tr>
-              );
-            })}
+            {resultList &&
+              resultList.map((value) => {
+                return (
+                  <CustomerRow
+                    key={`${value.type}-${value.id}`}
+                    customer={value}
+                    isSelected={selectedItems.includes(value.id)}
+                    onSelect={handleSelectItems}
+                    onNavigate={handleNavigateToDetail}
+                  />
+                );
+              })}
           </tbody>
         </table>
       </div>
     </div>
   );
 }
+
+interface CustomerRowProps {
+  customer: Customer;
+  isSelected: boolean;
+  onSelect: (id: number) => void;
+  onNavigate: (id: number, type: string) => void;
+}
+
+const CustomerRow = memo<CustomerRowProps>(
+  ({ customer, isSelected, onSelect, onNavigate }) => (
+    <tr className="hover:bg-hover [&_td]:text-primary-text [&_td]:border-t-fourtiary bg-white [&_td]:border-t-[1px] [&_td]:p-2.5 [&_td]:!pr-0 [&_td]:text-left [&_td]:font-normal">
+      <td>
+        <button
+          onClick={() => onSelect(customer.id)}
+          className="text-secondary-text flex items-center justify-center border-none bg-transparent outline-none hover:cursor-pointer"
+        >
+          {isSelected ? (
+            <SelectedIcon className="h-5 w-5" />
+          ) : (
+            <SelectIcon className="h-5 w-5" />
+          )}
+        </button>
+      </td>
+      <td
+        className="hover:cursor-pointer hover:!underline"
+        onClick={() => onNavigate(customer.id, customer.type)}
+      >
+        <div className="flex items-center justify-start gap-[15px]">
+          <img
+            src={customer.profileImg}
+            alt=""
+            className="max-h-11 min-h-11 max-w-11 min-w-11 overflow-hidden rounded-full"
+            loading="lazy"
+          />
+          <p className="overflow-ellipsis">
+            {customer.name}{" "}
+            {isPrivateCustomer(customer) ? customer.surname : ""}
+          </p>
+        </div>
+      </td>
+      <td>
+        {formatAddress(
+          customer.address,
+          customer.city,
+          customer.cap,
+          customer.province,
+        )}
+      </td>
+      <td>{customer.phone}</td>
+      <td>0</td>
+      <td>0 €</td>
+    </tr>
+  ),
+);
 
 export default Customers;

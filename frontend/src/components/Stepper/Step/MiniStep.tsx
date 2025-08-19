@@ -1,3 +1,4 @@
+import React from "react";
 import styles from "./MiniStep.module.css";
 
 function MiniStep({

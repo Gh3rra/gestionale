@@ -6,45 +6,46 @@ import {
 } from "../../Icon.tsx";
 import { useAuth } from "../../context/AuthContext.tsx";
 import Button from "../../components/Button/Button.tsx";
+import React from "react";
 
 function AdminNavbar() {
   const { user, signIn, signUp, signOut } = useAuth();
   return (
-    <div className="fixed top-0 z-99 bg-background h-[84px] w-screen flex flex-row items-center justify-between text-secondary-text [&_a]:h-full border-b-1 border-fourtiary border-solid px-5">
+    <div className="bg-background text-secondary-text border-fourtiary fixed top-0 z-99 flex h-[84px] w-screen flex-row items-center justify-between border-b-1 border-solid px-5 [&_a]:h-full">
       <a href="/">
-        <div className="flex  h-full items-center justify-center [&_img]:h-full [&_img]:cursor-pointer ">
+        <div className="flex h-full items-center justify-center [&_img]:h-full [&_img]:cursor-pointer">
           <img src="/logo.png" alt="" />
         </div>
       </a>
 
-      <div className="relative w-[480px] h-[45px] rounded-[10px] flex flex-row items-center px-[15px] gap-1.5 border-[0.5px] bg-hover border-secondary-text">
-        <SearchIcon size={20} />
+      <div className="bg-hover border-secondary-text relative flex h-[45px] w-[480px] flex-row items-center gap-1.5 rounded-[10px] border-[0.5px] px-[15px]">
+        <SearchIcon className="text-secondary h-5 w-5 overflow-visible" />
         <input
           type="text"
-          className="outline-none border-none bg-transparent w-full h-full text-secondary-text text-[17px]"
+          className="text-secondary-text h-full w-full border-none bg-transparent text-[17px] outline-none"
           placeholder="Cerca..."
         />
       </div>
 
       {user ? (
-        <div className="flex justify-between items-center gap-5">
+        <div className="flex items-center justify-between gap-5">
           {" "}
-          <div className="flex items-center justify-center p-[5px] rounded-[15px] hover:cursor-pointer hover:bg-second-background transition-[background-color]">
+          <div className="hover:bg-second-background flex items-center justify-center rounded-[15px] p-[5px] transition-[background-color] hover:cursor-pointer">
             {" "}
-            <SettingsIcon size={30} />
+            <SettingsIcon className="h-5 w-5" />
           </div>
-          <div className="flex items-center justify-center p-[5px] rounded-[15px] hover:cursor-pointer hover:bg-second-background transition-[background-color]">
+          <div className="hover:bg-second-background flex items-center justify-center rounded-[15px] p-[5px] transition-[background-color] hover:cursor-pointer">
             {" "}
-            <NotificationIcon size={30} />
+            <NotificationIcon className="h-5 w-5" />
           </div>
           <div
-            className="flex items-center justify-center p-[5px] rounded-[15px] hover:cursor-pointer hover:bg-second-background transition-[background-color]"
+            className="hover:bg-second-background flex items-center justify-center rounded-[15px] p-[5px] transition-[background-color] hover:cursor-pointer"
             onClick={signOut}
           >
             {" "}
-            <SignoutIcon size={30} />
+            <SignoutIcon className="h-5 w-5" />
           </div>
-          <div className="w-12.5 h-12.5 rounded-full bg-white border-fourtiary border- overflow-hidden ">
+          <div className="border-fourtiary border- h-12.5 w-12.5 overflow-hidden rounded-full bg-white">
             <img
               className="h-full w-full object-contain"
               src={user.profileImg}
@@ -53,7 +54,7 @@ function AdminNavbar() {
           </div>
         </div>
       ) : (
-        <div className="flex justify-between items-center gap-5">
+        <div className="flex items-center justify-between gap-5">
           {" "}
           <Button
             buttonColor="black"
@@ -69,7 +70,7 @@ function AdminNavbar() {
                 "gerri.schiavo@gmail.com",
                 "12345678",
                 "Meridional Serramenti SRL",
-                "https://i.imgur.com/vfDpIXK.png"
+                "https://i.imgur.com/vfDpIXK.png",
               )
             }
           >

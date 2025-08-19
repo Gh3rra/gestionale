@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
 
 interface User {
@@ -10,12 +10,13 @@ interface User {
 
 interface AuthContextType {
   user: User | null;
+  loading: boolean;
   signIn: (email: string, password: string) => void;
   signUp: (
     email: string,
     password: string,
     name: string,
-    profileImg: string
+    profileImg?: string,
   ) => void;
   signOut: () => void;
 }
@@ -24,17 +25,31 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    axios
-      .get("http://localhost:3000/api/auth/user", { withCredentials: true })
-      .then((res) => {
-        if (res.status !== 200) {
+    const checkAuthStatus = async () => {
+      try {
+        setLoading(true);
+        const res = await axios.get("http://localhost:3000/api/auth/user", {
+          withCredentials: true,
+        });
+
+        if (res.status == 200) {
+          setUser(res.data.user);
+          setLoading(false);
+        } else {
           setUser(null);
-          return;
         }
-        setUser(res.data.user);
-      });
+      } catch (error) {
+        console.error("Error checking authentication status:", error);
+        setUser(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    checkAuthStatus();
   }, []);
 
   const signIn = async (email: string, password: string) => {
@@ -44,22 +59,20 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         email,
         password,
       },
-      { withCredentials: true }
+      { withCredentials: true },
     );
     if (res.status !== 200) {
       window.alert("Invalid credentials");
       return;
     }
     setUser(res.data.user);
-
-    //supabase.auth.signInWithPassword({ email, password });
   };
 
   const signUp = async (
     email: string,
     password: string,
     name: string,
-    profileImg: string
+    profileImg?: string,
   ) => {
     const res = await axios.post(
       "http://localhost:3000/api/auth/register",
@@ -69,7 +82,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         name,
         profileImg,
       },
-      { withCredentials: true }
+      { withCredentials: true },
     );
     if (res.status !== 201) {
       window.alert("Error signing up");
@@ -81,7 +94,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const res = await axios.post(
       "http://localhost:3000/api/auth/logout",
       {},
-      { withCredentials: true }
+      { withCredentials: true },
     );
     if (res.status !== 200) {
       window.alert("Error signing out");
@@ -92,7 +105,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, signIn, signUp, signOut }}>
+    <AuthContext.Provider value={{ user, signIn, signUp, signOut, loading }}>
       {children}
     </AuthContext.Provider>
   );

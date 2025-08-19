@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "target": "es2020",
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "noImplicitAny": false, // ← Permette 'any' implicito
+    "strictNullChecks": false,
+    "skipLibCheck": true,
+    "outDir": "./dist" // ← Output directory chiara
+  }
+}

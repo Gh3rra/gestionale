@@ -1,7 +1,7 @@
 export const customers = [
   {
     id: 0,
-    type: 0,
+    type: "private",
     name: "Luigi",
     surname: "Moio",
     gender: "M",
@@ -22,7 +22,7 @@ export const customers = [
     id: 1,
     profileImg:
       "https://citynews-anconatoday.stgy.ovh/~media/horizontal-low/3616561166072/mario-canino-2.jpg",
-    type: 0,
+    type: "private",
     name: "Mario",
     surname: "Canino",
     gender: "M",
@@ -42,7 +42,7 @@ export const customers = [
     profileImg:
       "https://www.giffonifilmfestival.it/media/k2/items/cache/e6dd110b7f2dbbfd39190ac96008ce7f_XL.jpg",
 
-    type: 0,
+    type: "private",
     name: "Francesco",
     surname: "Paolantoni",
     gender: "M",
@@ -59,7 +59,7 @@ export const customers = [
   },
   {
     id: 3,
-    type: 1,
+    type: "juridical",
     name: "Gate SRL",
     profileImg:
       "https://www.gate-srl.it/wp-content/uploads/2018/05/logo-x-fondo-buanco.png",
@@ -78,7 +78,7 @@ export const customers = [
 
   {
     id: 4,
-    type: 1,
+    type: "juridical",
     name: "Quintodecimo",
     profileImg:
       "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/04/52/fd/b4/quintodecimo-winery.jpg?w=900&h=500&s=1",
@@ -96,7 +96,7 @@ export const customers = [
   },
   {
     id: 5,
-    type: 1,
+    type: "juridical",
     name: "Comune di Melito Irpino",
     profileImg:
       "https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8Y2l0eXxlbnwwfHwwfHx8MA%3D%3D",
@@ -114,7 +114,7 @@ export const customers = [
   },
   {
     id: 6,
-    type: 0,
+    type: "private",
     name: "Luigi",
     surname: "Moio",
     profileImg:
@@ -134,7 +134,7 @@ export const customers = [
   },
   {
     id: 7,
-    type: 0,
+    type: "private",
     name: "Luigi",
     surname: "Moio",
     profileImg:
@@ -154,7 +154,7 @@ export const customers = [
   },
   {
     id: 8,
-    type: 0,
+    type: "private",
     name: "Luigi",
     surname: "Moio",
     gender: "M",
@@ -172,6 +172,7 @@ export const customers = [
     worksDone: 15,
     totalValueWorks: 1540.3,
   },
+  
 ];
 
 export const suppliers = [

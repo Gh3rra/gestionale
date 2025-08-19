@@ -1,5 +1,8 @@
 {
   "compilerOptions": {
+    "composite": true,        // ← Aggiungi questo
+    "declaration": true,      // ← Necessario con composite
+    "declarationMap": true,    // ← Opzionale ma utile
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
     "target": "ES2020",
     "useDefineForClassFields": true,

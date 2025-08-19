@@ -8,12 +8,11 @@ type StepperProps = {
 
 type StepProps = {
   gap?: string;
-
 };
 
 function Stepper({ gap = "20px", children }: StepperProps) {
   const validChildren = React.Children.toArray(children).filter(
-    React.isValidElement
+    React.isValidElement,
   ) as React.ReactElement<StepProps>[];
   return (
     <div className={styles.wrapper} style={{ gap }}>

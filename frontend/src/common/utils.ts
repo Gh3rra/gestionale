@@ -37,3 +37,44 @@ export const checkValueDecimal = (value: string) => {
 
   return val;
 };
+
+export const checkValueCap = (value: string) => {
+  let val = value;
+  val = val.replace(/[^\d]/g, "");
+  if (val.length > 5) {
+    val = val.slice(0, 5);
+  }
+  return val;
+};
+
+export const formatAddress = (
+  address: string,
+  city: string,
+  cap: string,
+  province: string,
+) => {
+  let formattedAddress = "";
+  if (address) {
+    if (city) {
+      formattedAddress = address.replace(/,/g, " ") + ", ";
+    } else {
+      formattedAddress = address.replace(/,/g, " ");
+    }
+  }
+  if (city) {
+    if (cap) {
+      formattedAddress += `${city} `;
+    } else {
+      formattedAddress += `${city}`;
+    }
+  }
+  if (cap) {
+    if (province) {
+      formattedAddress += `${cap} (${province})`;
+    } else {
+      formattedAddress += `${cap}`;
+    }
+  }
+  return formattedAddress;
+};
+

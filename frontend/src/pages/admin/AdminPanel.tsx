@@ -1,35 +1,37 @@
 import React, { useEffect } from "react";
-import Button from "../../components/Button/Button";
 import * as XLSX from "xlsx";
 import axios from "axios";
+import MyButtonFile from "../../components/InputFileButton/Button";
 
 type TablesCount = {
   commission: boolean;
   commissionDiscounts: boolean;
   commissionIncomes: boolean;
   commissionJuridicalCustomer: boolean;
-  commissionOtherExpenses: boolean;
+  commissionMaterial: boolean;
   commissionPrivateCustomer: boolean;
-  commissionTravelExpenses: boolean;
-  commissionWorkerExpenses: boolean;
   ddt: boolean;
-  item: boolean;
-  itemCategories: boolean;
-  itemSubCategories: boolean;
-  itemTypes: boolean;
+  expense: boolean;
+  expenseType: boolean;
   juridicalCustomer: boolean;
+  material: boolean;
+  materialCategories: boolean;
+  materialSubCategories: boolean;
+  materialTypes: boolean;
   paymentMethods: boolean;
   paymentTerms: boolean;
   privateCustomer: boolean;
   purchase: boolean;
   purchaseDiscounts: boolean;
   purchaseInvoice: boolean;
-  purchaseItem: boolean;
+  purchaseMaterial: boolean;
   state: boolean;
   supplier: boolean;
   unitMeasures: boolean;
   user: boolean;
+  warehouseMaterial: boolean;
   worker: boolean;
+  workerPresence: boolean;
 };
 
 function AdminPanel() {
@@ -45,6 +47,8 @@ function AdminPanel() {
       });
       if (res.status === 201) {
         setTables(res.data.result);
+        console.log(res.data.result.worker);
+
         setLoading(false);
       }
     } catch (error) {
@@ -58,7 +62,7 @@ function AdminPanel() {
   }, []);
 
   const handleSendMeasuresExcel = async (
-    e: React.ChangeEvent<HTMLInputElement>
+    e: React.ChangeEvent<HTMLInputElement>,
   ) => {
     setInsertLoading(true);
     try {
@@ -82,7 +86,7 @@ function AdminPanel() {
             {
               measures: jsonData,
             },
-            { withCredentials: true }
+            { withCredentials: true },
           );
           if (res.status !== 201) {
             setInsertLoading(false);
@@ -109,7 +113,7 @@ function AdminPanel() {
   };
 
   const handleSendPaymentModeExcel = async (
-    e: React.ChangeEvent<HTMLInputElement>
+    e: React.ChangeEvent<HTMLInputElement>,
   ) => {
     setInsertLoading(true);
     try {
@@ -133,7 +137,7 @@ function AdminPanel() {
             {
               paymentMethods: jsonData,
             },
-            { withCredentials: true }
+            { withCredentials: true },
           );
           if (res.status !== 201) {
             setInsertLoading(false);
@@ -160,7 +164,7 @@ function AdminPanel() {
   };
 
   const handleSendPaymentTermsExcel = async (
-    e: React.ChangeEvent<HTMLInputElement>
+    e: React.ChangeEvent<HTMLInputElement>,
   ) => {
     setInsertLoading(true);
     try {
@@ -184,7 +188,7 @@ function AdminPanel() {
             {
               paymentTerms: jsonData,
             },
-            { withCredentials: true }
+            { withCredentials: true },
           );
           if (res.status !== 201) {
             setInsertLoading(false);
@@ -233,7 +237,7 @@ function AdminPanel() {
             {
               workers: jsonData,
             },
-            { withCredentials: true }
+            { withCredentials: true },
           );
           if (res.status !== 201) {
             setInsertLoading(false);
@@ -282,7 +286,7 @@ function AdminPanel() {
             {
               states: jsonData,
             },
-            { withCredentials: true }
+            { withCredentials: true },
           );
           if (res.status !== 201) {
             setInsertLoading(false);
@@ -308,7 +312,7 @@ function AdminPanel() {
   };
 
   const handleSupplierExcel = async (
-    e: React.ChangeEvent<HTMLInputElement>
+    e: React.ChangeEvent<HTMLInputElement>,
   ) => {
     setInsertLoading(true);
     try {
@@ -332,7 +336,7 @@ function AdminPanel() {
             {
               suppliers: jsonData,
             },
-            { withCredentials: true }
+            { withCredentials: true },
           );
           if (res.status !== 201) {
             setInsertLoading(false);
@@ -358,8 +362,8 @@ function AdminPanel() {
     }
   };
 
-  const handleItemAndCategoriesExcel = async (
-    e: React.ChangeEvent<HTMLInputElement>
+  const handleMaterialAndCategoriesExcel = async (
+    e: React.ChangeEvent<HTMLInputElement>,
   ) => {
     setInsertLoading(true);
     try {
@@ -387,24 +391,24 @@ function AdminPanel() {
           const typeSheet = workbook.Sheets[typeName];
           const typeJsonData = XLSX.utils.sheet_to_json(typeSheet);
 
-          const itemName = workbook.SheetNames[3];
-          const itemSheet = workbook.Sheets[itemName];
-          const itemJsonData = XLSX.utils.sheet_to_json(itemSheet);
+          const materialName = workbook.SheetNames[3];
+          const materialSheet = workbook.Sheets[materialName];
+          const materialJsonData = XLSX.utils.sheet_to_json(materialSheet);
 
           console.log(categoryJsonData);
           console.log(subCategoryJsonData);
           console.log(typeJsonData);
-          console.log(itemJsonData);
+          console.log(materialJsonData);
 
           const res = await axios.post(
-            "http://localhost:3000/api/import/item",
+            "http://localhost:3000/api/import/material",
             {
-              itemCategories: categoryJsonData,
-              itemSubCategories: subCategoryJsonData,
-              itemTypes: typeJsonData,
-              item: itemJsonData,
+              materialCategories: categoryJsonData,
+              materialSubCategories: subCategoryJsonData,
+              materialTypes: typeJsonData,
+              material: materialJsonData,
             },
-            { withCredentials: true }
+            { withCredentials: true },
           );
           if (res.status !== 201) {
             setInsertLoading(false);
@@ -431,7 +435,7 @@ function AdminPanel() {
   };
 
   const handleCustomerExcel = async (
-    e: React.ChangeEvent<HTMLInputElement>
+    e: React.ChangeEvent<HTMLInputElement>,
   ) => {
     setInsertLoading(true);
     try {
@@ -455,7 +459,7 @@ function AdminPanel() {
             {
               customers: jsonData,
             },
-            { withCredentials: true }
+            { withCredentials: true },
           );
           if (res.status !== 201) {
             setInsertLoading(false);
@@ -482,7 +486,7 @@ function AdminPanel() {
   };
 
   const handleComissionExcel = async (
-    e: React.ChangeEvent<HTMLInputElement>
+    e: React.ChangeEvent<HTMLInputElement>,
   ) => {
     setInsertLoading(true);
     try {
@@ -506,7 +510,7 @@ function AdminPanel() {
             {
               commissions: jsonData,
             },
-            { withCredentials: true }
+            { withCredentials: true },
           );
           if (res.status !== 201) {
             setInsertLoading(false);
@@ -533,7 +537,7 @@ function AdminPanel() {
   };
 
   const handleCommissionCustomerExcel = async (
-    e: React.ChangeEvent<HTMLInputElement>
+    e: React.ChangeEvent<HTMLInputElement>,
   ) => {
     setInsertLoading(true);
     try {
@@ -557,7 +561,7 @@ function AdminPanel() {
             {
               data: jsonData,
             },
-            { withCredentials: true }
+            { withCredentials: true },
           );
           if (res.status !== 201) {
             setInsertLoading(false);
@@ -584,7 +588,7 @@ function AdminPanel() {
   };
 
   const handleDiscountsExcel = async (
-    e: React.ChangeEvent<HTMLInputElement>
+    e: React.ChangeEvent<HTMLInputElement>,
   ) => {
     setInsertLoading(true);
     try {
@@ -608,7 +612,7 @@ function AdminPanel() {
             {
               discounts: jsonData,
             },
-            { withCredentials: true }
+            { withCredentials: true },
           );
           if (res.status !== 201) {
             setInsertLoading(false);
@@ -634,294 +638,207 @@ function AdminPanel() {
     }
   };
 
-   const handleIncomesExcel = async (
-     e: React.ChangeEvent<HTMLInputElement>
-   ) => {
-     setInsertLoading(true);
-     try {
-       const file = e.target.files?.[0];
-       if (!file) {
-         setInsertLoading(false);
-         return;
-       }
-       const reader = new FileReader();
-       reader.onload = async (e) => {
-         try {
-           const data = e.target?.result;
-           const workbook = XLSX.read(data, { type: "array" });
-           const sheetName = workbook.SheetNames[0];
-           const worksheet = workbook.Sheets[sheetName];
-           const jsonData = XLSX.utils.sheet_to_json(worksheet);
-           console.log(jsonData);
+  const handleIncomesExcel = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInsertLoading(true);
+    try {
+      const file = e.target.files?.[0];
+      if (!file) {
+        setInsertLoading(false);
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        try {
+          const data = e.target?.result;
+          const workbook = XLSX.read(data, { type: "array" });
+          const sheetName = workbook.SheetNames[0];
+          const worksheet = workbook.Sheets[sheetName];
+          const jsonData = XLSX.utils.sheet_to_json(worksheet);
+          console.log(jsonData);
 
-           const res = await axios.post(
-             "http://localhost:3000/api/import/incomes",
-             {
-               incomes: jsonData,
-             },
-             { withCredentials: true }
-           );
-           if (res.status !== 201) {
-             setInsertLoading(false);
-             window.alert("Error during import");
-             return;
-           }
-           setInsertLoading(false);
-           fetchTables();
-         } catch (error) {
-           console.log(error);
-           window.alert("Error during import");
+          const res = await axios.post(
+            "http://localhost:3000/api/import/incomes",
+            {
+              incomes: jsonData,
+            },
+            { withCredentials: true },
+          );
+          if (res.status !== 201) {
+            setInsertLoading(false);
+            window.alert("Error during import");
+            return;
+          }
+          setInsertLoading(false);
+          fetchTables();
+        } catch (error) {
+          console.log(error);
+          window.alert("Error during import");
 
-           setInsertLoading(false);
-         }
-       };
+          setInsertLoading(false);
+        }
+      };
 
-       reader.readAsArrayBuffer(file);
-     } catch (error) {
-       console.log(error);
-       setInsertLoading(false);
-     } finally {
-       e.target.value = "";
-     }
-   };
-
-  console.log("RENDER");
+      reader.readAsArrayBuffer(file);
+    } catch (error) {
+      console.log(error);
+      setInsertLoading(false);
+    } finally {
+      e.target.value = "";
+    }
+  };
 
   return (
-    <div className="mt-[84px] p-10 flex gap-2 w-full h-full flex-wrap">
+    <div className="mt-[84px] flex h-full w-full flex-wrap gap-2 p-10">
       {!loading && (
         <>
-          <Button
-            style={{
-              backgroundColor: tables?.unitMeasures ? "green" : "",
-            }}
-            width="200px"
-            height="100px"
-            className={`relative`}
+          <MyButtonFile
+            className={`relative ${tables?.unitMeasures ? "!bg-green-600" : ""}`}
+            accept=".xlsx, .xls"
+            onChange={(e) => handleSendMeasuresExcel(e)}
+            disabled={insertLoading || tables?.unitMeasures}
           >
-            <input
-              disabled={insertLoading || tables?.unitMeasures}
-              accept=".xlsx, .xls"
-              type="file"
-              className="opacity-0 absolute w-full h-full top-0 left-0 hover:cursor-pointer"
-              onChange={(e) => handleSendMeasuresExcel(e)}
-            />
+            {" "}
             {insertLoading ? (
               <p className="text-wrap">Loading...</p>
             ) : (
               <p className="text-wrap">Importa Unità di misura</p>
             )}
-          </Button>
-          <Button
-            style={{
-              backgroundColor: tables?.worker ? "green" : "",
-            }}
-            width="200px"
-            height="100px"
-            className={`relative `}
+          </MyButtonFile>
+
+          <MyButtonFile
+            disabled={insertLoading || tables?.worker}
+            accept=".xlsx, .xls"
+            onChange={(e) => handleWorkersExcel(e)}
+            className={`relative ${tables?.worker ? "!bg-green-600" : ""}`}
           >
-            <input
-              disabled={insertLoading || tables?.worker}
-              accept=".xlsx, .xls"
-              type="file"
-              className="opacity-0 absolute w-full h-full top-0 left-0 hover:cursor-pointer"
-              onChange={(e) => handleWorkersExcel(e)}
-            />
             {insertLoading ? (
               <p className="text-wrap">Loading...</p>
             ) : (
               <p className="text-wrap">Importa Dipendenti</p>
             )}
-          </Button>
-          <Button
-            style={{
-              backgroundColor: tables?.paymentMethods ? "green" : "",
-            }}
-            width="200px"
-            height="100px"
-            className={`relative`}
+          </MyButtonFile>
+          <MyButtonFile
+            disabled={insertLoading || tables?.paymentMethods}
+            onChange={(e) => handleSendPaymentModeExcel(e)}
+            accept=".xlsx, .xls"
+            className={`relative ${tables?.paymentMethods ? "!bg-green-600" : ""}`}
           >
-            <input
-              disabled={insertLoading || tables?.paymentMethods}
-              accept=".xlsx, .xls"
-              type="file"
-              className="opacity-0 absolute w-full h-full top-0 left-0 hover:cursor-pointer"
-              onChange={(e) => handleSendPaymentModeExcel(e)}
-            />
             {insertLoading ? (
               <p className="text-wrap">Loading...</p>
             ) : (
               <p className="text-wrap">Importa modalità di pagamento</p>
             )}
-          </Button>
-          <Button
-            style={{
-              backgroundColor: tables?.paymentTerms ? "green" : "",
-            }}
-            width="200px"
-            height="100px"
-            className={`relative`}
+          </MyButtonFile>
+          <MyButtonFile
+            disabled={insertLoading || tables?.paymentTerms}
+            accept=".xlsx, .xls"
+            onChange={(e) => handleSendPaymentTermsExcel(e)}
+            className={`relative ${tables?.paymentTerms ? "!bg-green-600" : ""}`}
           >
-            <input
-              disabled={insertLoading || tables?.paymentTerms}
-              accept=".xlsx, .xls"
-              type="file"
-              className="opacity-0 absolute w-full h-full top-0 left-0 hover:cursor-pointer"
-              onChange={(e) => handleSendPaymentTermsExcel(e)}
-            />
             {insertLoading ? (
               <p className="text-wrap">Loading...</p>
             ) : (
               <p className="text-wrap">Importa termini di pagamento</p>
             )}
-          </Button>
-          <Button
-            style={{
-              backgroundColor: tables?.state ? "green" : "",
-            }}
-            width="200px"
-            height="100px"
-            className={`relative `}
+          </MyButtonFile>
+          <MyButtonFile
+            disabled={insertLoading || tables?.state}
+            accept=".xlsx, .xls"
+            
+            onChange={(e) => handleStatesExcel(e)}
+            className={`relative ${tables?.state ? "!bg-green-600" : ""}`}
           >
-            <input
-              disabled={insertLoading || tables?.state}
-              accept=".xlsx, .xls"
-              type="file"
-              className="opacity-0 absolute w-full h-full top-0 left-0 hover:cursor-pointer"
-              onChange={(e) => handleStatesExcel(e)}
-            />
+           
             {insertLoading ? (
               <p className="text-wrap">Loading...</p>
             ) : (
               <p className="text-wrap">Importa stati commissioni</p>
             )}
-          </Button>
-          <Button
-            style={{
-              backgroundColor:
-                tables?.privateCustomer || tables?.juridicalCustomer
-                  ? "green"
-                  : "",
-            }}
-            width="200px"
-            height="100px"
-            className={`relative `}
+          </MyButtonFile>
+          <MyButtonFile
+            disabled={
+              insertLoading ||
+              tables?.privateCustomer ||
+              tables?.juridicalCustomer
+            }
+            accept=".xlsx, .xls"
+            onChange={(e) => handleCustomerExcel(e)}
+            className={`relative ${
+              tables?.privateCustomer || tables?.juridicalCustomer
+                ? "!bg-green-600"
+                : ""
+            }`}
           >
-            <input
-              disabled={
-                insertLoading ||
-                tables?.privateCustomer ||
-                tables?.juridicalCustomer
-              }
-              accept=".xlsx, .xls"
-              type="file"
-              className="opacity-0 absolute w-full h-full top-0 left-0 hover:cursor-pointer"
-              onChange={(e) => handleCustomerExcel(e)}
-            />
             {insertLoading ? (
               <p className="text-wrap">Loading...</p>
             ) : (
               <p className="text-wrap">Importa clienti</p>
             )}
-          </Button>
-          <Button
-            style={{
-              backgroundColor: tables?.supplier ? "green" : "",
-            }}
-            width="200px"
-            height="100px"
-            className={`relative `}
+          </MyButtonFile>
+          <MyButtonFile
+            disabled={insertLoading || tables?.supplier}
+            accept=".xlsx, .xls"
+            onChange={(e) => handleSupplierExcel(e)}
+            className={`relative ${tables?.supplier ? "!bg-green-600" : ""}`}
           >
-            <input
-              disabled={insertLoading || tables?.supplier}
-              accept=".xlsx, .xls"
-              type="file"
-              className="opacity-0 absolute w-full h-full top-0 left-0 hover:cursor-pointer"
-              onChange={(e) => handleSupplierExcel(e)}
-            />
             {insertLoading ? (
               <p className="text-wrap">Loading...</p>
             ) : (
               <p className="text-wrap">Importa fornitori</p>
             )}
-          </Button>
-          <Button
-            style={{
-              backgroundColor:
-                tables?.itemCategories ||
-                tables?.itemSubCategories ||
-                tables?.itemTypes ||
-                tables?.item
-                  ? "green"
-                  : "",
-            }}
-            width="200px"
-            height="100px"
-            className={`relative `}
+          </MyButtonFile>
+          <MyButtonFile
+            disabled={
+              insertLoading ||
+              tables?.materialCategories ||
+              tables?.materialSubCategories ||
+              tables?.materialTypes ||
+              tables?.material
+            }
+            accept=".xlsx, .xls"
+            onChange={(e) => handleMaterialAndCategoriesExcel(e)}
+            className={`relative ${
+              tables?.materialCategories ||
+              tables?.materialSubCategories ||
+              tables?.materialTypes ||
+              tables?.material
+                ? "!bg-green-600"
+                : ""
+            }`}
           >
-            <input
-              disabled={
-                insertLoading ||
-                tables?.itemCategories ||
-                tables?.itemSubCategories ||
-                tables?.itemTypes ||
-                tables?.item
-              }
-              accept=".xlsx, .xls"
-              type="file"
-              className="opacity-0 absolute w-full h-full top-0 left-0 hover:cursor-pointer"
-              onChange={(e) => handleItemAndCategoriesExcel(e)}
-            />
             {insertLoading ? (
               <p className="text-wrap">Loading...</p>
             ) : (
               <p className="text-wrap">Importa articoli e categorie</p>
             )}
-          </Button>
-          <Button
-            style={{
-              backgroundColor: tables?.commission ? "green" : "",
-            }}
-            width="200px"
-            height="100px"
-            className={`relative `}
+          </MyButtonFile>
+          <MyButtonFile
+            disabled={insertLoading || tables?.commission}
+            onChange={(e) => handleComissionExcel(e)}
+            accept=".xlsx, .xls"
+            className={`relative ${tables?.commission ? "!bg-green-600" : ""}`}
           >
-            <input
-              disabled={insertLoading || tables?.commission}
-              accept=".xlsx, .xls"
-              type="file"
-              className="opacity-0 absolute w-full h-full top-0 left-0 hover:cursor-pointer"
-              onChange={(e) => handleComissionExcel(e)}
-            />
             {insertLoading ? (
               <p className="text-wrap">Loading...</p>
             ) : (
               <p className="text-wrap">Importa commissioni (dopo clienti)</p>
             )}
-          </Button>
-          <Button
-            style={{
-              backgroundColor:
-                tables?.commissionJuridicalCustomer ||
-                tables?.commissionPrivateCustomer
-                  ? "green"
-                  : "",
-            }}
-            width="200px"
-            height="100px"
-            className={`relative `}
+          </MyButtonFile>
+          <MyButtonFile
+            disabled={
+              insertLoading ||
+              tables?.commissionJuridicalCustomer ||
+              tables?.commissionPrivateCustomer
+            }
+            accept=".xlsx, .xls"
+            onChange={(e) => handleCommissionCustomerExcel(e)}
+            className={`relative ${
+              tables?.commissionJuridicalCustomer ||
+              tables?.commissionPrivateCustomer
+                ? "!bg-green-600"
+                : ""
+            }`}
           >
-            <input
-              disabled={
-                insertLoading ||
-                tables?.commissionJuridicalCustomer ||
-                tables?.commissionPrivateCustomer
-              }
-              accept=".xlsx, .xls"
-              type="file"
-              className="opacity-0 absolute w-full h-full top-0 left-0 hover:cursor-pointer"
-              onChange={(e) => handleCommissionCustomerExcel(e)}
-            />
             {insertLoading ? (
               <p className="text-wrap">Loading...</p>
             ) : (
@@ -930,49 +847,31 @@ function AdminPanel() {
                 commissioni)
               </p>
             )}
-          </Button>
-          <Button
-            style={{
-              backgroundColor: tables?.commissionDiscounts ? "green" : "",
-            }}
-            width="200px"
-            height="100px"
-            className={`relative `}
+          </MyButtonFile>
+          <MyButtonFile
+            disabled={insertLoading || tables?.commissionDiscounts}
+            accept=".xlsx, .xls"
+            onChange={(e) => handleDiscountsExcel(e)}
+            className={`relative ${tables?.commissionDiscounts ? "!bg-green-600" : ""}`}
           >
-            <input
-              disabled={insertLoading || tables?.commissionDiscounts}
-              accept=".xlsx, .xls"
-              type="file"
-              className="opacity-0 absolute w-full h-full top-0 left-0 hover:cursor-pointer"
-              onChange={(e) => handleDiscountsExcel(e)}
-            />
             {insertLoading ? (
               <p className="text-wrap">Loading...</p>
             ) : (
               <p className="text-wrap">Importa sconti (dopo commissioni)</p>
             )}
-          </Button>
-          <Button
-            style={{
-              backgroundColor: tables?.commissionIncomes ? "green" : "",
-            }}
-            width="200px"
-            height="100px"
-            className={`relative `}
+          </MyButtonFile>
+          <MyButtonFile
+            disabled={insertLoading || tables?.commissionIncomes}
+            accept=".xlsx, .xls"
+            onChange={(e) => handleIncomesExcel(e)}
+            className={`relative ${tables?.commissionIncomes ? "!bg-green-600" : ""}`}
           >
-            <input
-              disabled={insertLoading || tables?.commissionIncomes}
-              accept=".xlsx, .xls"
-              type="file"
-              className="opacity-0 absolute w-full h-full top-0 left-0 hover:cursor-pointer"
-              onChange={(e) => handleIncomesExcel(e)}
-            />
             {insertLoading ? (
               <p className="text-wrap">Loading...</p>
             ) : (
               <p className="text-wrap">Importa incassi (dopo commissioni)</p>
             )}
-          </Button>
+          </MyButtonFile>
         </>
       )}
     </div>

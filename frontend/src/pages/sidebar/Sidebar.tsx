@@ -1,3 +1,4 @@
+import React from "react";
 import {
   CustomerIcon,
   DocumentsIcon,
@@ -10,17 +11,17 @@ import { NavLink } from "react-router";
 
 function Sidebar() {
   return (
-    <div className="fixed mt-[84px] h-screen w-[346px] min-w-[346px] flex flex-col bg-background text-secondary-text border-r-1 border-r-fourtiary">
-      <div className="w-full flex flex-col justify-center items-center p-5">
-        <div className="w-full flex flex-col justify-center items-start p-5 gap-5 ">
+    <div className="bg-background text-secondary-text border-r-fourtiary [&_svg]:text-secondary-text fixed mt-[84px] flex h-screen w-[346px] min-w-[346px] flex-col border-r-1">
+      <div className="flex w-full flex-col items-center justify-center p-5">
+        <div className="flex w-full flex-col items-start justify-center gap-5 p-5">
           <NavLink
             to="/"
             className={({ isActive }) =>
               isActive ? "[&>div]:bg-second-background w-full" : "w-full"
             }
           >
-            <div className="w-full rounded-[10px] flex items-center gap-[15px] p-[15px] !text-[18px] font-normal  hover:cursor-pointer hover:bg-second-background">
-              <HomeIcon size={30} />
+            <div className="hover:bg-second-background flex w-full items-center gap-[15px] rounded-[10px] p-[15px] !text-[18px] font-normal hover:cursor-pointer">
+              <HomeIcon className="h-5 w-5" />
               <p className="text-secondary-text"> Dashboard</p>
             </div>
           </NavLink>
@@ -30,8 +31,8 @@ function Sidebar() {
               isActive ? "[&>div]:bg-second-background w-full" : "w-full"
             }
           >
-            <div className="w-full rounded-[10px] flex items-center gap-[15px] p-[15px] !text-[18px] font-normal  hover:cursor-pointer hover:bg-second-background">
-              <WorksIcon size={30} />
+            <div className="hover:bg-second-background flex w-full items-center gap-[15px] rounded-[10px] p-[15px] !text-[18px] font-normal hover:cursor-pointer">
+              <WorksIcon className="h-5 w-5" />
               <p className="text-secondary-text"> Commesse</p>
             </div>
           </NavLink>
@@ -41,8 +42,8 @@ function Sidebar() {
               isActive ? "[&>div]:bg-second-background w-full" : "w-full"
             }
           >
-            <div className="w-full rounded-[10px] flex items-center gap-[15px] p-[15px] !text-[18px] font-normal  hover:cursor-pointer hover:bg-second-background">
-              <CustomerIcon size={30} />
+            <div className="hover:bg-second-background flex w-full items-center gap-[15px] rounded-[10px] p-[15px] !text-[18px] font-normal hover:cursor-pointer">
+              <CustomerIcon className="h-5 w-5" />
               <p className="text-secondary-text"> Clienti</p>
             </div>
           </NavLink>
@@ -52,8 +53,8 @@ function Sidebar() {
               isActive ? "[&>div]:bg-second-background w-full" : "w-full"
             }
           >
-            <div className="w-full rounded-[10px] flex items-center gap-[15px] p-[15px] !text-[18px] font-normal  hover:cursor-pointer hover:bg-second-background">
-              <SupplierIcon size={30} />
+            <div className="hover:bg-second-background flex w-full items-center gap-[15px] rounded-[10px] p-[15px] !text-[18px] font-normal hover:cursor-pointer">
+              <SupplierIcon className="h-5 w-5" />
               <p className="text-secondary-text"> Fornitori</p>
             </div>
           </NavLink>{" "}
@@ -63,8 +64,8 @@ function Sidebar() {
               isActive ? "[&>div]:bg-second-background w-full" : "w-full"
             }
           >
-            <div className="w-full rounded-[10px] flex items-center gap-[15px] p-[15px] !text-[18px] font-normal  hover:cursor-pointer hover:bg-second-background">
-              <GraphIcon size={30} />
+            <div className="hover:bg-second-background flex w-full items-center gap-[15px] rounded-[10px] p-[15px] !text-[18px] font-normal hover:cursor-pointer">
+              <GraphIcon className="w-5" />
               <p className="text-secondary-text"> Grafici</p>
             </div>
           </NavLink>
@@ -74,8 +75,8 @@ function Sidebar() {
               isActive ? "[&>div]:bg-second-background w-full" : "w-full"
             }
           >
-            <div className="w-full rounded-[10px] flex items-center gap-[15px] p-[15px] !text-[18px] font-normal  hover:cursor-pointer hover:bg-second-background">
-              <DocumentsIcon size={30} />
+            <div className="hover:bg-second-background flex w-full items-center gap-[15px] rounded-[10px] p-[15px] !text-[18px] font-normal hover:cursor-pointer">
+              <DocumentsIcon className="h-5 w-5" />
               <p className="text-secondary-text"> Documenti</p>
             </div>
           </NavLink>

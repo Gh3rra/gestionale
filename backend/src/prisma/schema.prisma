@@ -1,0 +1,533 @@
+/**
+ * PER RIAVVIARE A CAUSA DI UN CAMBIO SCHEMA
+ * 1. STOPPARE IL SERVER
+ * 2. npx prisma migrate reset
+ * 3. npm run db:deploy
+ * 4. npm run dev
+ */
+
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  //output   = "./node_modules/@prisma/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Tabella per la gestione degli utenti
+model User {
+  id                          String                        @id @default(cuid())
+  name                        String
+  email                       String                        @unique
+  password                    String
+  dark_theme                  Boolean                       @default(false)
+  profile_img                 String?
+  createdAt                   DateTime                      @default(now())
+  updatedAt                   DateTime                      @updatedAt
+  Commission                  Commission[]
+  PrivateCustomer             PrivateCustomer[]
+  JuridicalCustomer           JuridicalCustomer[]
+  Supplier                    Supplier[]
+  CommissionPrivateCustomer   CommissionPrivateCustomer[]
+  CommissionJuridicalCustomer CommissionJuridicalCustomer[]
+  MaterialCategories          MaterialCategories[]
+  MaterialSubCategories       MaterialSubCategories[]
+  MaterialTypes               MaterialTypes[]
+  Material                    Material[]
+  Worker                      Worker[]
+  CommissionIncomes           CommissionIncomes[]
+  CommissionDiscounts         CommissionDiscounts[]
+  PurchaseMaterial            PurchaseMaterial[]
+  Purchase                    Purchase[]
+  PurchaseDiscounts           PurchaseDiscounts[]
+  PurchaseInvoice             PurchaseInvoice[]
+  Ddt                         Ddt[]
+  CommissionMaterial          CommissionMaterial[]
+  WarehouseMaterial           WarehouseMaterial[]
+  WorkerPresence              WorkerPresence[]
+  ExpenseType                 ExpenseType[]
+  Expense                     Expense[]
+}
+
+// Tabella per la gestione degli stati delle commesse
+model State {
+  id          Int          @id @default(autoincrement())
+  description String
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  Commission  Commission[]
+}
+
+// Tabella per la gestione delle commissioni
+model Commission {
+  id                Int       @id @default(autoincrement())
+  number            Int       @unique
+  title             String
+  description       String?
+  stateId           Int
+  state             State     @relation(fields: [stateId], references: [id], onDelete: Cascade)
+  initialOfferPrice Float?
+  address           String?
+  city              String?
+  cap               String?
+  province          String?
+  requestDate       DateTime
+  startWorkDate     DateTime?
+  endWorkDate       DateTime?
+  userId            String
+  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  CommissionIncomes           CommissionIncomes[]
+  CommissionDiscounts         CommissionDiscounts[]
+  CommissionMaterial          CommissionMaterial[]
+  WorkerPresence              WorkerPresence[]
+  Expense                     Expense[]
+  CommissionPrivateCustomer   CommissionPrivateCustomer?
+  CommissionJuridicalCustomer CommissionJuridicalCustomer?
+
+  @@index([userId])
+}
+
+// Tabella gestione clienti privati
+model PrivateCustomer {
+  id                        Int                         @id @default(autoincrement())
+  name                      String
+  surname                   String
+  description               String?
+  gender                    String
+  cf                        String                      @unique
+  address                   String?
+  city                      String?
+  cap                       String?
+  province                  String?
+  phone                     String?
+  email                     String?
+  pec                       String?
+  profileImg                String?
+  userId                    String
+  user                      User                        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt                 DateTime                    @default(now())
+  updatedAt                 DateTime                    @updatedAt
+  CommissionPrivateCustomer CommissionPrivateCustomer[]
+}
+
+// Tabella gestione clienti giuridici
+model JuridicalCustomer {
+  id                          Int                           @id @default(autoincrement())
+  name                        String
+  description                 String?
+  ivaCode                     String                        @unique
+  cf                          String?                       @unique
+  address                     String?
+  city                        String?
+  cap                         String?
+  province                    String?
+  legalAddress                String?
+  legalCity                   String?
+  legalCap                    String?
+  legalProvince               String?
+  phone                       String?
+  email                       String?
+  pec                         String
+  profileImg                  String?
+  userId                      String
+  user                        User                          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt                   DateTime                      @default(now())
+  updatedAt                   DateTime                      @updatedAt
+  CommissionJuridicalCustomer CommissionJuridicalCustomer[]
+}
+
+// Tabella gestione fornitori
+model Supplier {
+  id            Int        @id @default(autoincrement())
+  name          String
+  ivaCode       String     @unique
+  cf            String?    @unique
+  address       String?
+  city          String?
+  cap           String?
+  province      String?
+  legalAddress  String?
+  legalCity     String?
+  legalCap      String?
+  legalProvince String?
+  phone         String?
+  email         String?
+  pec           String
+  profileImg    String?
+  userId        String
+  user          User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  Purchase      Purchase[]
+}
+
+// Tabella gestione clienti privati per le commesse
+model CommissionPrivateCustomer {
+  commissionId      Int             @unique
+  privateCustomerId Int
+  commission        Commission      @relation(fields: [commissionId], references: [id], onDelete: Cascade)
+  privateCustomer   PrivateCustomer @relation(fields: [privateCustomerId], references: [id], onDelete: Cascade)
+  userId            String
+  user              User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+
+  @@id([commissionId, privateCustomerId])
+  @@index([commissionId, privateCustomerId])
+}
+
+// Tabella gestione clienti giuridici per le commesse
+model CommissionJuridicalCustomer {
+  commissionId        Int               @unique
+  juridicalCustomerId Int
+  commission          Commission        @relation(fields: [commissionId], references: [id], onDelete: Cascade)
+  juridicalCustomer   JuridicalCustomer @relation(fields: [juridicalCustomerId], references: [id], onDelete: Cascade)
+  userId              String
+  user                User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
+
+  @@id([commissionId, juridicalCustomerId])
+  @@index([commissionId, juridicalCustomerId])
+}
+
+// Tabella gestione sconti
+model CommissionDiscounts {
+  id           Int        @id @default(autoincrement())
+  amount       Float
+  date         DateTime
+  commissionId Int
+  commission   Commission @relation(fields: [commissionId], references: [id], onDelete: Cascade)
+  userId       String
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  @@index([commissionId, userId])
+}
+
+model PurchaseDiscounts {
+  id                Int             @id @default(autoincrement())
+  amount            Float
+  date              DateTime
+  purchaseInvoiceId Int
+  purchaseInvoice   PurchaseInvoice @relation(fields: [purchaseInvoiceId], references: [id], onDelete: Cascade)
+  userId            String
+  user              User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+
+  @@index([userId])
+}
+
+// Tabella gestione unità di misura articoli
+model UnitMeasures {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  PurchaseMaterial   PurchaseMaterial[]
+  CommissionMaterial CommissionMaterial[]
+  WarehouseMaterial  WarehouseMaterial[]
+}
+
+// Tabella gestione metodi di pagamento
+model PaymentMethods {
+  id                Int                 @id @default(autoincrement())
+  title             String
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  CommissionIncomes CommissionIncomes[]
+  PurchaseInvoice   PurchaseInvoice[]
+}
+
+// Tabella gestione entrate commissioni
+model CommissionIncomes {
+  id              Int            @id @default(autoincrement())
+  description     String?
+  amount          Float
+  paymentDate     DateTime
+  paymentMethodId Int
+  paymentMethod   PaymentMethods @relation(fields: [paymentMethodId], references: [id], onDelete: Cascade)
+  commissionId    Int
+  commission      Commission     @relation(fields: [commissionId], references: [id], onDelete: Cascade)
+  userId          String
+  user            User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  @@index([commissionId, userId])
+}
+
+model PaymentTerms {
+  id              Int               @id @default(autoincrement())
+  title           String
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  PurchaseInvoice PurchaseInvoice[]
+}
+
+// Tabella gestione lavoratori
+model Worker {
+  id             Int              @id @default(autoincrement())
+  name           String
+  surname        String
+  cf             String           @unique
+  address        String
+  city           String
+  cap            String
+  province       String
+  phone          String
+  email          String
+  profileImg     String?
+  userId         String
+  user           User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  WorkerPresence WorkerPresence[]
+
+  @@index([userId])
+}
+
+enum PresenceType {
+  LAVORO
+  MALATTIA
+  PERMESSO
+}
+
+// Tabella gestione presenze lavoratori
+model WorkerPresence {
+  id             Int          @id @default(autoincrement())
+  description    String?
+  date           DateTime
+  type           PresenceType
+  startMorning   DateTime? // ora entrata mattina
+  endMorning     DateTime? // ora uscita mattina
+  startAfternoon DateTime? // ora entrata pomeriggio
+  endAfternoon   DateTime? // ora uscita pomeriggio
+  totalHours     Int
+  costPerHour    Float?
+  totalCost      Float?
+  commissionId   Int?
+  commission     Commission?  @relation(fields: [commissionId], references: [id], onDelete: Cascade)
+
+  workerId  Int
+  worker    Worker   @relation(fields: [workerId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+}
+
+model CommissionMaterial {
+  id            Int          @id @default(autoincrement())
+  unitMeasureId Int
+  unitMeasure   UnitMeasures @relation(fields: [unitMeasureId], references: [id], onDelete: Cascade)
+  quantity      Int
+  unitPrice     Float
+  totalPrice    Float
+  materialId    Int
+  material      Material     @relation(fields: [materialId], references: [id], onDelete: Cascade)
+  commissionId  Int
+  commission    Commission   @relation(fields: [commissionId], references: [id], onDelete: Cascade)
+  userId        String
+  user          User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  @@index([commissionId, userId])
+}
+
+model WarehouseMaterial {
+  id            Int          @id @default(autoincrement())
+  unitMeasureId Int
+  unitMeasure   UnitMeasures @relation(fields: [unitMeasureId], references: [id], onDelete: Cascade)
+  quantity      Int
+  purchaseId    Int?
+  purchase      Purchase?    @relation(fields: [purchaseId], references: [id], onDelete: Cascade)
+  materialId    Int
+  material      Material     @relation(fields: [materialId], references: [id], onDelete: Cascade)
+  userId        String
+  user          User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  @@index([userId])
+}
+
+model ExpenseType {
+  id        Int       @id @default(autoincrement())
+  name      String
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  Expense   Expense[]
+}
+
+model Expense {
+  id            Int         @id @default(autoincrement())
+  description   String?
+  date          DateTime
+  amount        Float
+  expenseTypeId Int
+  expenseType   ExpenseType @relation(fields: [expenseTypeId], references: [id], onDelete: Cascade)
+
+  invoiceId    Int?
+  invoice      PurchaseInvoice? @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  commissionId Int?
+  commission   Commission?      @relation(fields: [commissionId], references: [id], onDelete: Cascade)
+  userId       String
+  user         User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+
+  @@index([commissionId, userId])
+}
+
+// Tabella gestione macrocategorie
+model MaterialCategories {
+  id                    Int                     @id @default(autoincrement())
+  title                 String
+  userId                String
+  user                  User                    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt             DateTime                @default(now())
+  updatedAt             DateTime                @updatedAt
+  MaterialSubCategories MaterialSubCategories[]
+}
+
+// Tabella gestione sottocategorie
+model MaterialSubCategories {
+  id            Int                @id @default(autoincrement())
+  title         String
+  categoryId    Int
+  category      MaterialCategories @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  userId        String
+  user          User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
+  MaterialTypes MaterialTypes[]
+}
+
+// Tabella gestione tipologie di articoli
+model MaterialTypes {
+  id            Int                   @id @default(autoincrement())
+  title         String
+  subCategoryId Int
+  subCategory   MaterialSubCategories @relation(fields: [subCategoryId], references: [id], onDelete: Cascade)
+  userId        String
+  user          User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt     DateTime              @default(now())
+  updatedAt     DateTime              @updatedAt
+  Material      Material[]
+}
+
+// Tabella gestione articoli
+model Material {
+  id                 Int                  @id @default(autoincrement())
+  brand              String?
+  model              String
+  description        String?
+  meterWeight        Float?
+  userId             String
+  user               User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+  typeId             Int
+  type               MaterialTypes        @relation(fields: [typeId], references: [id], onDelete: Cascade)
+  PurchaseMaterial   PurchaseMaterial[]
+  CommissionMaterial CommissionMaterial[]
+  WarehouseMaterial  WarehouseMaterial[]
+
+  @@index([userId])
+}
+
+model Purchase {
+  id            Int       @id @default(autoincrement())
+  invoiceNumber String
+  date          DateTime
+  taxableAmount Float
+  vat           Float
+  totalAmount   Float
+  userId        String
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  ddt           Ddt[]
+  Supplier      Supplier? @relation(fields: [supplierId], references: [id], onDelete: Cascade)
+  supplierId    Int?
+
+  WarehouseMaterial WarehouseMaterial[]
+  PurchaseMaterial  PurchaseMaterial[]
+}
+
+model PurchaseMaterial {
+  id            Int          @id @default(autoincrement())
+  description   String?
+  unitMeasureId Int
+  unitMeasure   UnitMeasures @relation(fields: [unitMeasureId], references: [id], onDelete: Cascade)
+  quantity      Int?
+  unitPrice     Float?
+  totalPrice    Float
+  materialId    Int
+  material      Material     @relation(fields: [materialId], references: [id], onDelete: Cascade)
+  purchaseId    Int
+  purchase      Purchase     @relation(fields: [purchaseId], references: [id], onDelete: Cascade)
+  userId        String
+  user          User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+}
+
+// Tabella gestione fatture articoli
+model PurchaseInvoice {
+  id            Int      @id @default(autoincrement())
+  invoiceNumber String
+  date          DateTime
+  taxableAmount Float
+  vat           Float
+  totalAmount   Float
+
+  userId            String
+  user              User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  PurchaseDiscounts PurchaseDiscounts[]
+  Ddt               Ddt[]
+  paymentMethodId   Int?
+  PaymentMethod     PaymentMethods?     @relation(fields: [paymentMethodId], references: [id], onDelete: Cascade)
+  paymentTermsId    Int?
+  PaymentTerms      PaymentTerms?       @relation(fields: [paymentTermsId], references: [id], onDelete: Cascade)
+  Expense           Expense[]
+
+  @@index([userId])
+}
+
+model Ddt {
+  id         Int              @id @default(autoincrement())
+  number     String
+  date       DateTime
+  invoiceId  Int?
+  invoice    PurchaseInvoice? @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  userId     String
+  user       User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt  DateTime         @default(now())
+  updatedAt  DateTime         @updatedAt
+  Purchase   Purchase?        @relation(fields: [purchaseId], references: [id], onDelete: Cascade)
+  purchaseId Int?
+}

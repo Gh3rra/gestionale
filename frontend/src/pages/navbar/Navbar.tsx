@@ -1,5 +1,5 @@
 import { IoIosArrowForward } from "react-icons/io";
-import { Link, useLocation } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 
 import {
   HomeIcon,
@@ -10,65 +10,129 @@ import {
 } from "../../Icon.tsx";
 import { useAuth } from "../../context/AuthContext.tsx";
 import Button from "../../components/Button/Button.tsx";
-import Icon from "../../components/Icon/Icon.tsx";
+import IconButton from "../../components/IconButton/IconButton.tsx";
+import React, { JSX } from "react";
+
+type Breadcrumb = {
+  label: string;
+  path: string;
+  icon?: JSX.Element;
+};
 
 function Navbar() {
   const location = useLocation();
-  const pageTitles = {
-    "/": "Dashboard",
-    "/commissions": "Commesse",
-    "/customers": "Clienti",
-    "/suppliers": "Fornitori",
-    "/add-commission": "Nuova Commessa",
+  const navigate = useNavigate();
+
+  const buildBreadcrumbs = (pathname: string) => {
+    const breadcrumbs: Breadcrumb[] = [
+      {
+        label: "Home",
+        path: "/",
+        icon: (
+         
+            <HomeIcon className="h-5 w-5" />
+        
+        ),
+      },
+    ];
+
+    const parts = pathname.split("/").filter(Boolean); // rimuove stringhe vuote
+
+    if (parts[0] === "customers") {
+      breadcrumbs.push({ label: "Clienti", path: "/customers" });
+
+      if (parts[1]) {
+        breadcrumbs.push({ label: "Dettaglio", path: pathname });
+      }
+    } else if (parts[0] === "commissions") {
+      breadcrumbs.push({ label: "Commesse", path: "/commissions" });
+
+      if (parts[1]) {
+        breadcrumbs.push({ label: "Dettaglio", path: pathname });
+      }
+    } else if (parts[0] === "suppliers") {
+      breadcrumbs.push({ label: "Fornitori", path: "/suppliers" });
+
+      if (parts[1]) {
+        breadcrumbs.push({ label: "Dettaglio", path: pathname });
+      }
+    } else if (parts[0] === "add-commission") {
+      breadcrumbs.push({ label: "Nuova Commessa", path: "/add-commission" });
+    } else if (parts[0] === "graphs") {
+      breadcrumbs.push({ label: "Grafici", path: "/graphs" });
+    } else if (parts[0] === "docs") {
+      breadcrumbs.push({ label: "Documenti", path: "/docs" });
+    }
+
+    return breadcrumbs;
   };
-  const currentTitle = pageTitles[location.pathname] || "Pagina sconosciuta";
+
+  const breadcrumbs = buildBreadcrumbs(location.pathname);
+
   const { user, signIn, signUp, signOut } = useAuth();
   return (
-    <div className="fixed top-0 z-99 bg-background h-[84px] w-screen flex flex-row items-center text-secondary-text [&_a]:h-full border-b-1 border-fourtiary border-solid ">
-      <a href="/">
-        <div className="flex min-w-[346px] h-full items-center justify-center [&_img]:h-full [&_img]:cursor-pointer border-r-1 border-fourtiary border-solid">
+    <div className="bg-background text-secondary-text border-fourtiary [&_svg]:text-secondary-text fixed top-0 z-99 flex h-[84px] w-screen flex-row items-center border-b-1 border-solid">
+      <a href="/" className="h-full">
+        <div className="border-fourtiary flex h-full min-w-[346px] items-center justify-center border-r-1 border-solid [&_img]:h-full [&_img]:cursor-pointer">
           <img src="/logo.png" alt="" />
         </div>
       </a>
-      <div className="h-full w-full px-[20px] flex items-center justify-between">
-        <div className="flex flex-row justify-between w-3/5">
+      <div className="flex h-full w-full items-center justify-between px-[20px]">
+        <div className="flex w-3/5 flex-row justify-between">
           <div className="flex flex-row items-center gap-2.5">
-            <Link to="/">
-              <Icon>
-                <HomeIcon size={30} />
-              </Icon>
-            </Link>
-            <IoIosArrowForward size={20} />
-            <p>{currentTitle}</p>
+            {breadcrumbs.map((breadcrumb, index) => (
+              <React.Fragment key={index}>
+                <IconButton
+                  onClick={() =>
+                    index === breadcrumbs.length - 1
+                      ? null
+                      : navigate(breadcrumb.path)
+                  }
+                >
+                  {breadcrumb.icon || (
+                    <p
+                      onClick={() =>
+                        index === breadcrumbs.length - 1
+                          ? null
+                          : navigate(index - (breadcrumbs.length - 1))
+                      }
+                    >
+                      {breadcrumb.label}
+                    </p>
+                  )}
+                </IconButton>
+
+                {index < breadcrumbs.length - 1 && (
+                  <IoIosArrowForward size={20} />
+                )}
+              </React.Fragment>
+            ))}
           </div>
-          <div className="relative w-[480px] h-[45px] rounded-[10px] flex flex-row items-center px-[15px] gap-1.5 border-[0.5px] bg-hover border-secondary-text">
-            <SearchIcon size={20} />
+          <div className="bg-hover border-secondary-text relative flex h-[45px] w-[480px] flex-row items-center gap-1.5 rounded-[10px] border-[0.5px] px-[15px]">
+            <SearchIcon className="!text-secondary h-5 w-5 overflow-visible" />
             <input
               type="text"
-              className="outline-none border-none bg-transparent w-full h-full text-secondary-text text-[17px]"
+              className="text-secondary-text h-full w-full border-none bg-transparent text-[17px] outline-none"
               placeholder="Cerca..."
             />
           </div>
         </div>
         {user ? (
-          <div className="flex justify-between items-center gap-5">
+          <div className="flex items-center justify-between gap-5">
             {" "}
-            <div className="flex items-center justify-center p-[5px] rounded-[15px] hover:cursor-pointer hover:bg-second-background transition-[background-color]">
+            <IconButton>
               {" "}
-              <SettingsIcon size={30} />
-            </div>
-            <div className="flex items-center justify-center p-[5px] rounded-[15px] hover:cursor-pointer hover:bg-second-background transition-[background-color]">
+              <SettingsIcon className="h-5 w-5" />
+            </IconButton>
+            <IconButton>
               {" "}
-              <NotificationIcon size={30} />
-            </div>
-            <div
-              className="flex items-center justify-center p-[5px] rounded-[15px] hover:cursor-pointer hover:bg-second-background transition-[background-color]"
-              onClick={signOut}
-            >
+              <NotificationIcon className="h-5 w-5" />
+            </IconButton>
+            <IconButton onClick={signOut}>
               {" "}
-              <SignoutIcon size={30} />
-            </div>
-            <div className="w-12.5 h-12.5 rounded-full bg-white border-fourtiary border- overflow-hidden ">
+              <SignoutIcon className="h-5 w-5" />
+            </IconButton>
+            <div className="border-fourtiary border- h-12.5 w-12.5 overflow-hidden rounded-full bg-white">
               <img
                 className="h-full w-full object-contain"
                 src={user.profileImg}
@@ -77,23 +141,20 @@ function Navbar() {
             </div>
           </div>
         ) : (
-          <div className="flex justify-between items-center gap-5">
+          <div className="flex items-center justify-between gap-5">
             {" "}
             <Button
-              buttonColor="black"
-              height="40px"
               onClick={() => signIn("gerri.schiavo@gmail.com", "12345678")}
             >
               Accedi
             </Button>
             <Button
-              height="40px"
               onClick={() =>
                 signUp(
                   "gerri.schiavo@gmail.com",
                   "12345678",
                   "Meridional Serramenti SRL",
-                  "https://i.imgur.com/vfDpIXK.png"
+                  "https://i.imgur.com/vfDpIXK.png",
                 )
               }
             >

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   FilterSettingsIcon,
   SearchIcon,
@@ -6,94 +6,144 @@ import {
   SelectIcon,
   UnselectedIcon,
 } from "../../Icon";
-import { suppliers } from "../../data";
 import Fuse from "fuse.js";
-import Icon from "../../components/Icon/Icon";
+import IconButton from "../../components/IconButton/IconButton";
+import { useNavigate } from "react-router";
+import { CircularProgress } from "@mui/material";
+import { useSuppliers } from "../../hooks/useSupplier";
+import { Supplier } from "../../types/supplier";
+import React from "react";
 
 function Suppliers() {
+  const navigate = useNavigate();
+
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
-  const [selectedAll, setSelectedAll] = useState(false);
-  const [suppliersList, setSuppliersList] = useState(suppliers);
-  const [listToSearch] = useState(suppliersList);
+
+  const [resultList, setResultList] = useState<Supplier[]>([]);
+  const [listToSearch, setListToSearch] = useState<Supplier[]>([]);
+
   const [searchText, setSearchText] = useState("");
 
-  const fuse = new Fuse(listToSearch, {
-    threshold: 0.4,
-    keys: ["name"],
-  });
+  const {
+    data: suppliersList = [],
+    isLoading,
+    error,
+    refetch,
+  } = useSuppliers();
 
-  const search = () => {
+  useEffect(() => {
+    if (suppliersList.length > 0) {
+      setResultList(suppliersList);
+      setListToSearch(suppliersList);
+    }
+  }, [suppliersList]);
+
+  const fuse = useMemo(
+    () =>
+      new Fuse(listToSearch, {
+        threshold: 0.4,
+        keys: ["name", "ivaCode"],
+      }),
+    [listToSearch],
+  );
+
+  const search = useCallback(() => {
     const newList = fuse.search(searchText).map((result) => result.item);
     if (searchText === "") {
-      setSuppliersList(listToSearch);
+      setResultList(listToSearch);
     } else {
-      setSuppliersList(newList);
+      setResultList(newList);
     }
-  };
+  }, [searchText, listToSearch, fuse]);
 
   useEffect(() => {
     search();
-  }, [searchText]);
+  }, [search]);
 
-  const handleSelectItems = (id: number) => {
-    setSelectedItems(
-      selectedItems.includes(id)
-        ? selectedItems.filter((value) => value !== id)
-        : [...selectedItems, id]
+  const handleSelectItems = useCallback((id: number) => {
+    setSelectedItems((prev) =>
+      prev.includes(id) ? prev.filter((value) => value !== id) : [...prev, id],
     );
-  };
+  }, []);
 
-  const handleSelectAll = () => {
-    setSelectedItems(
-      selectedItems.length !== 0 ? [] : suppliersList.map((value) => value.id)
+  const selectedAll = useMemo(() => {
+    return (
+      selectedItems.length === resultList.length && resultList.length !== 0
     );
-  };
+  }, [selectedItems, resultList]);
 
-  useEffect(() => {
-    if (selectedItems.length === suppliersList.length) {
-      setSelectedAll(true);
-    } else {
-      setSelectedAll(false);
-    }
-  }, [selectedItems]);
+  const handleSelectAll = useCallback(() => {
+    setSelectedItems(
+      selectedItems.length !== 0 ? [] : resultList.map((value) => value.id),
+    );
+  }, [selectedItems.length, resultList]);
+
+  const handleSearchChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setSearchText(event.target.value);
+    },
+    [],
+  );
+
+  const handleNavigateToDetail = useCallback(
+    (id: number) => {
+      navigate(`/suppliers/${id}`);
+    },
+    [navigate],
+  );
+  if (isLoading) return <CircularProgress />;
+  if (error) return <div>Errore: {error.message}</div>;
+  if (suppliersList.length === 0)
+    return (
+      <div className="mt-[84px] ml-[346px] w-full px-[60px] py-[40px]">
+        Nessun fornitore trovato.
+      </div>
+    );
 
   return (
-    <div className="w-full mt-[84px] ml-[346px] py-[40px] px-[60px]">
-      <div className="flex justify-between">
-        <div className="flex gap-2.5">
-          <p className="font-semibold !text-[30px]">Elenco Fornitori</p>
-          <p>Visualizza tutte le informazioni sui tuoi fornitori.</p>
-        </div>
+    <div className="mt-[84px] ml-[346px] w-full px-[60px] py-[40px]">
+      <div className="flex flex-col gap-2.5">
+        <p className="!text-[30px] font-semibold">Elenco Fornitori</p>
+        <p>Visualizza tutte le informazioni sui tuoi fornitori.</p>
       </div>
-      <div className="flex items-center gap-2.5">
-        <div className="relative w-[480px] h-[45px] rounded-[10px] flex items-center px-[15px] gap-[7px] border-[0.5px] border-secondary-text">
-          <SearchIcon size={20} />
+
+      <div className="mt-5 flex items-center gap-2.5">
+        <div className="border-secondary-text relative flex h-[45px] w-[480px] items-center gap-[7px] rounded-[10px] border-[0.5px] px-[15px]">
+          <SearchIcon className="text-secondary h-5 w-5 overflow-visible" />
           <input
             value={searchText}
-            onChange={(e) => setSearchText(e.target.value)}
+            onChange={handleSearchChange}
             type="text"
-            className="bg-transparent w-full h-full border-none text-secondary-text !text-[17px] outline-none font-[Inter]"
+            className="text-secondary-text h-full w-full border-none bg-transparent font-[Inter] !text-[17px] outline-none"
             placeholder="Cerca Fornitori"
           />
         </div>
-        <Icon>
+        <IconButton>
           <FilterSettingsIcon size={20} />
-        </Icon>
+        </IconButton>
       </div>
-      <table className="border-spacing-0 border-separate border-1 border-fourtiary w-full mt-[50px] rounded-[10px] overflow-hidden">
+
+      <table className="border-fourtiary mt-[50px] w-full border-separate border-spacing-0 overflow-hidden rounded-[10px] border-1">
+        <colgroup>
+          <col style={{ minWidth: "auto" }} />
+          <col style={{ width: "30%" }} />
+          <col style={{ width: "35%" }} />
+          <col style={{ width: "15%" }} />
+          <col style={{ width: "15%" }} />
+        </colgroup>
         <thead>
-          <tr className="[&_th]:bg-hover [&_th]:align-middle [&_th]:text-left [&_th]:p-2.5 [&_th]:!pr-0 [&_th]:text-secondary-text [&_th]:font-normal">
+          <tr className="[&_th]:bg-hover [&_th]:text-secondary-text [&_th]:p-2.5 [&_th]:!pr-0 [&_th]:text-left [&_th]:align-middle [&_th]:font-normal">
             <th>
               <button
-                className="flex justify-center border-none outline-none items-center bg-transparent hover:cursor-pointer"
-                onClick={() => handleSelectAll()}
+                className="flex items-center justify-center border-none bg-transparent outline-none hover:cursor-pointer"
+                onClick={handleSelectAll}
               >
                 {selectedAll ? (
-                  <SelectedIcon size={25} />
+                  <SelectedIcon className="h-5 w-5" />
                 ) : selectedItems.length !== 0 ? (
-                  <UnselectedIcon size={25} />
+                  <UnselectedIcon className="h-5 w-5" />
                 ) : (
-                  <SelectIcon size={25} />
+                  <SelectIcon className="h-5 w-5" />
                 )}
               </button>
             </th>
@@ -104,32 +154,36 @@ function Suppliers() {
           </tr>
         </thead>
         <tbody>
-          {suppliersList.map((value, index) => {
+          {resultList.map((value) => {
             return (
               <tr
-                className="bg-white hover:bg-hover [&_td]:p-2.5 [&_td]:!pr-0 [&_td]:text-left [&_td]:text-primary-text [&_td]:font-normal [&_td]:border-t-[1px] [&_td]:border-t-fourtiary "
-                key={index}
+                className="hover:bg-hover [&_td]:text-primary-text [&_td]:border-t-fourtiary bg-white [&_td]:border-t-[1px] [&_td]:p-2.5 [&_td]:pr-0 [&_td]:text-left [&_td]:font-normal"
+                key={value.id}
               >
                 <td>
                   <button
-                    onClick={() => {
-                      handleSelectItems(value.id);
-                    }}
-                    className="flex justify-center border-none outline-none items-center bg-transparent hover:cursor-pointer"
+                    onClick={() => handleSelectItems(value.id)}
+                    className="flex items-center justify-center border-none bg-transparent outline-none hover:cursor-pointer"
                   >
-                    {selectedItems.length !== 0 &&
-                    selectedItems.includes(value.id) ? (
-                      <SelectedIcon size={25} />
+                    {selectedItems.includes(value.id) ? (
+                      <SelectedIcon className="text-secondary-text h-5 w-5" />
                     ) : (
-                      <SelectIcon size={25} />
+                      <SelectIcon className="text-secondary-text h-5 w-5" />
                     )}
                   </button>
                 </td>
-                <td>
-                  <div className="flex justify-start items-center gap-[15px]">
-                    <div className="flex justify-center items-center rounded-full w-[45px] h-[45px] overflow-hidden border-1 border-fourtiary">
-                      <img src={value.profileImg} alt="" />
-                    </div>
+                <td
+                  className="hover:cursor-pointer hover:[&_p]:!underline"
+                  onClick={() => handleNavigateToDetail(value.id)}
+                >
+                  <div className="flex items-center justify-start gap-[15px]">
+                    <img
+                      loading="lazy"
+                      src={value.profileImg}
+                      alt=""
+                      className="max-h-11 min-h-11 max-w-11 min-w-11 overflow-hidden rounded-full"
+                    />
+
                     <p> {value.name}</p>
                   </div>
                 </td>
@@ -137,7 +191,7 @@ function Suppliers() {
                   {value.address}, {value.city} {value.cap} {value.province}
                 </td>
                 <td>{value.phone}</td>
-                <td>{value.email}</td>
+                <td className="!pr-5">{value.email}</td>
               </tr>
             );
           })}

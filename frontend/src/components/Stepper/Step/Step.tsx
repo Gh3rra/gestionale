@@ -7,9 +7,10 @@ type StepProps = {
   icon: React.ReactNode;
   state: number;
   gap?: string;
+  onClick?: () => void;
 };
 
-function Step({ children, text, icon, state, gap }: StepProps) {
+function Step({ children, text, icon, state, gap, onClick }: StepProps) {
   const getStyle = () => {
     switch (state) {
       case 0:
@@ -24,7 +25,7 @@ function Step({ children, text, icon, state, gap }: StepProps) {
   };
 
   return (
-    <div className={styles.step}>
+    <div className={styles.step} onClick={onClick}>
       <div className={styles.wrapper}>
         <div className={`${styles.circleState} ${getStyle()}`}>
           <div
